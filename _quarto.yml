@@ -1,0 +1,55 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - "*.qmd"
+
+website:
+  title: "Bingjin Xue"
+  description: "Assistant Professor of Economics, University of New Hampshire"
+  site-url: https://bingjinxue.com
+  favicon: assets/favicon.ico
+  navbar:
+    pinned: true
+    left:
+      - text: "Research"
+        href: research.qmd
+      - text: "Teaching"
+        href: teaching.qmd
+      - text: "CV"
+        href: cv.qmd
+      - text: "Contact"
+        href: contact.qmd
+    right:
+      - icon: envelope
+        href: mailto:bingjin.xue@unh.edu
+        aria-label: Email
+      - text: "Scholar"
+        href: https://scholar.google.com/citations?user=YOUR_ID
+        aria-label: Google Scholar
+      - icon: github
+        href: https://github.com/YOUR_USERNAME
+        aria-label: GitHub
+  page-footer:
+    left: "© 2026 Bingjin Xue"
+    right: "Built with [Quarto](https://quarto.org)"
+  open-graph: true
+  twitter-card: true
+
+format:
+  html:
+    theme:
+      light: [cosmo, styles.css]
+    toc: false
+    anchor-sections: false
+    link-external-newwindow: true
+    link-external-icon: false
+    smooth-scroll: true
+    fontsize: 1.05rem
+    mainfont: "Source Serif 4, Georgia, serif"
+    monofont: "JetBrains Mono, SFMono-Regular, Menlo, monospace"
+    include-in-header:
+      - text: |
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=JetBrains+Mono&display=swap" rel="stylesheet">

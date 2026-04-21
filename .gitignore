@@ -1,0 +1,18 @@
+# Quarto build artifacts
+/.quarto/
+/_site/
+/_freeze/
+
+# macOS
+.DS_Store
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# Claude Code local state
+.claude/
+
+# Node / misc
+node_modules/

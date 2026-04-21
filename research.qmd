@@ -1,0 +1,140 @@
+---
+title: "Research"
+pagetitle: "Research — Bingjin Xue"
+---
+
+## Published and Forthcoming
+
+::: {.paper}
+[Tourism Destinations in Crisis: Economic Ripple Effects]{.title}
+
+[with Hanna Lee, Yifei Wang, and Jinwon Kim]{.authors}
+
+[*Journal of Hospitality and Tourism Management*, 2026, 67, 101437.]{.venue}
+
+[We study how crises at tourism destinations propagate through regional economies.]{.abstract}
+:::
+
+::: {.paper}
+[Bittersweet: Grandparenting and Elderly Mental Health in the Two-Child Policy Era]{.title}
+
+[with Dapeng Chen and Shin-Yi Chou]{.authors}
+
+[*Journal of Development Economics*, 2025, 103670.]{.venue}
+
+[We examine how China's two-child policy reshaped grandparenting responsibilities and the mental health of older adults.]{.abstract}
+:::
+
+::: {.paper}
+[Implications of the Decline in LGBT Rights for Population Mental Health: Evidence from Polish "LGBT-free Zones"]{.title}
+
+[with Chad D. Meyerhoefer and Anna Poznańska]{.authors}
+
+[*Journal of Health Economics*, 2025, 100, 102973.]{.venue}
+
+[We use the rollout of Polish "LGBT-free zones" to estimate how the decline in LGBT rights affected population mental health.]{.abstract}
+:::
+
+## Under Review
+
+::: {.paper}
+[Abortion, Economic Hardship, and Crime]{.title}
+
+[with Erkmen G. Aslim, Wei Fu, Caitlin Myers, and Erdal Tekin]{.authors}
+
+[[Under review]{.tag} NBER Working Paper]{.venue}
+
+[We estimate the effects of post-Dobbs abortion restrictions on economic hardship and crime.]{.abstract}
+:::
+
+::: {.paper}
+[The Effects of Switching Electronic Health Record Developer on Specialty Referrals]{.title}
+
+[with Chad D. Meyerhoefer]{.authors}
+
+[[Under review]{.tag} NBER Working Paper]{.venue}
+
+[We estimate how switching electronic health record systems reshapes specialty referral networks.]{.abstract}
+:::
+
+::: {.paper}
+[From Overdose Prevention to Reproductive Health: The Impact of Naloxone Access Laws]{.title}
+
+[with Dajung Jun]{.authors}
+
+[[Under review]{.tag}]{.venue}
+
+[We study how state naloxone access laws spill over into reproductive health outcomes.]{.abstract}
+:::
+
+::: {.paper}
+[Unlocking Creativity: Public Health Insurance Provision and Artists' Labor Market Outcomes]{.title}
+
+[with Kevin S. Smith]{.authors}
+
+[[Under review]{.tag}]{.venue}
+
+[We estimate how public health insurance provision shapes labor market outcomes for artists.]{.abstract}
+:::
+
+::: {.paper}
+[The Impact of E-Cigarette Regulations on Birth Outcomes]{.title}
+
+[with Yizhao Wang]{.authors}
+
+[[Under review]{.tag}]{.venue}
+
+[We estimate how e-cigarette regulations affect birth outcomes.]{.abstract}
+:::
+
+::: {.paper}
+[Design on Top of Design]{.title}
+
+[single-authored]{.authors}
+
+[[Under review]{.tag}]{.venue}
+
+[Abstract to add.]{.abstract}
+:::
+
+## Working Papers
+
+::: {.paper}
+[Naloxone Coprescription Laws: Expanding Safety Without Fueling Misuse]{.title}
+
+[with Shin-Yi Chou and Jiarun Li]{.authors}
+
+[Working paper, 2026.]{.venue}
+
+[We study whether naloxone coprescription laws expand safety without encouraging opioid misuse.]{.abstract}
+:::
+
+::: {.paper}
+[Pressure from Students' Peer Parents]{.title}
+
+[with Dapeng Chen and Junjian Yi]{.authors}
+
+[Working paper, 2026.]{.venue}
+
+[We study how peer parents' behaviors shape students' outcomes and family choices.]{.abstract}
+:::
+
+::: {.paper}
+[Gender Gap in Response to Work Environment Changes: The Impact of EHR Switching on Physician Referral Networks]{.title}
+
+[single-authored]{.authors}
+
+[Working paper, 2026.]{.venue}
+
+[We examine whether electronic health record transitions reshape physician referral networks differently for male and female physicians.]{.abstract}
+:::
+
+::: {.paper}
+[Habit Formation in the Consumption of Healthcare Services]{.title}
+
+[with Chad D. Meyerhoefer]{.authors}
+
+[Working paper, 2026.]{.venue}
+
+[We study habit formation in the consumption of healthcare services.]{.abstract}
+:::

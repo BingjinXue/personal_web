@@ -1,0 +1,37 @@
+---
+title: "Bingjin Xue"
+page-layout: full
+pagetitle: "Bingjin Xue — Economist"
+include-in-header:
+  - text: |
+      <meta name="description" content="Bingjin Xue — Assistant Professor of Economics at the University of New Hampshire. Research in health economics, applied microeconometrics, and causal inference.">
+---
+
+::: {.home-hero}
+
+![](assets/photo.jpg)
+
+<div class="bio">
+
+# Bingjin Xue
+
+<div class="affiliation">Assistant Professor of Economics · Paul College of Business and Economics · University of New Hampshire</div>
+
+<p>
+Bingjin Xue is an Assistant Professor of Economics at the University of New Hampshire. His research uses quasi-experimental methods to study how policies and institutions shape health, labor, and economic behavior. Current work examines how post-Dobbs abortion restrictions affect economic hardship and crime, how naloxone access laws spill over into reproductive health, how e-cigarette regulations change birth outcomes, and how electronic health record transitions reshape physician referral networks.
+</p>
+
+<p>
+His work has appeared in the *Journal of Health Economics* and the *Journal of Development Economics*. He received his PhD in Business and Economics from Lehigh University in 2023. He teaches undergraduate microeconomics and graduate courses on predictive modeling and machine learning for economists.
+</p>
+
+<div class="links">
+[Email](mailto:bingjin.xue@unh.edu) ·
+[CV](assets/CV.pdf) ·
+[Google Scholar](https://scholar.google.com/citations?user=YOUR_ID) ·
+[GitHub](https://github.com/YOUR_USERNAME) ·
+[SSRN](https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=YOUR_ID)
+</div>
+
+</div>
+:::

@@ -1,0 +1,34 @@
+---
+title: "CV"
+pagetitle: "CV — Bingjin Xue"
+---
+
+Full CV: [**PDF**](assets/CV.pdf) *(updated April 2026)*
+
+## Positions
+
+- **Assistant Professor of Economics**, Paul College of Business and Economics, University of New Hampshire, 2023–present
+
+## Education
+
+- **Ph.D. in Economics**, [Institution], [Year]
+- **M.A. in Economics**, [Institution], [Year]
+- **B.A. in Economics**, [Institution], [Year]
+
+## Fields
+
+Health economics · Applied microeconometrics · Causal inference · Labor economics
+
+## Grants and awards
+
+- [Grant name], [funder], [amount], [years]
+- [Award name], [institution], [year]
+
+## Service
+
+- Referee: *Journal of Health Economics*, *Journal of Development Economics*, [others]
+- [Committee or editorial role]
+
+## Contact
+
+[bingjin.xue@unh.edu](mailto:bingjin.xue@unh.edu) · Paul College of Business and Economics, University of New Hampshire, Durham, NH
