@@ -3,6 +3,9 @@ project:
   output-dir: _site
   render:
     - "*.qmd"
+  resources:
+    - "google*.html"
+    - "CNAME"
 
 website:
   title: "Bingjin Xue"
