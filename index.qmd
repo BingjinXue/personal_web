@@ -15,22 +15,19 @@ include-in-header:
 
 # Bingjin Xue
 
-<div class="affiliation">Assistant Professor of Economics · Paul College of Business and Economics · University of New Hampshire</div>
+<div class="affiliation">Assistant Professor of Economics · Peter T. Paul College of Business and Economics · University of New Hampshire</div>
 
 <p>
-Bingjin Xue is an Assistant Professor of Economics at the University of New Hampshire. His research uses quasi-experimental methods to study how policies and institutions shape health, labor, and economic behavior. Current work examines how post-Dobbs abortion restrictions affect economic hardship and crime, how naloxone access laws spill over into reproductive health, how e-cigarette regulations change birth outcomes, and how electronic health record transitions reshape physician referral networks.
-</p>
-
-<p>
-His work has appeared in the *Journal of Health Economics* and the *Journal of Development Economics*. He received his PhD in Business and Economics from Lehigh University in 2023. He teaches undergraduate microeconomics and graduate courses on predictive modeling and machine learning for economists.
+I am an Assistant Professor of Economics at the University of New Hampshire. My research focuses on causal inference in the field of health economics using econometric methods, machine learning, and large-scale data.
+My current research interests fall into three categories: 1) how does health information technology affect healthcare providers and consumers. 2) the impact of public policies on the population mental health and wellbeing. 3) the economics of inequality and vulnerable population. 
 </p>
 
 <div class="links">
 [Email](mailto:bingjin.xue@unh.edu) ·
 [CV](assets/CV.pdf) ·
-[Google Scholar](https://scholar.google.com/citations?user=YOUR_ID) ·
-[GitHub](https://github.com/YOUR_USERNAME) ·
-[SSRN](https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=YOUR_ID)
+[Google Scholar](https://scholar.google.com/citations?hl=en&user=GjuByKMAAAAJ) ·
+[GitHub](https://github.com/bingjinxue) ·
+[LinkedIn](https://www.linkedin.com/in/xuebingjin/) .
 </div>
 
 </div>

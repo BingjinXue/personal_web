@@ -9,18 +9,13 @@ pagetitle: "Contact — Bingjin Xue"
 
 ## Office
 
-Paul College of Business and Economics
+Peter T. Paul College of Business and Economics
 University of New Hampshire
 10 Garrison Avenue
 Durham, NH 03824
 
 ## Elsewhere
-
-- [Google Scholar](https://scholar.google.com/citations?user=YOUR_ID)
-- [SSRN](https://papers.ssrn.com/sol3/cf_dev/AbsByAuth.cfm?per_id=YOUR_ID)
-- [GitHub](https://github.com/YOUR_USERNAME)
+- [LinkedIn](https://www.linkedin.com/in/xuebingjin/)
+- [Google Scholar](https://https://scholar.google.com/citations?hl=en&user=GjuByKMAAAAJ)
+- [GitHub](https://github.com/bingjinxue)
 - [UNH faculty page](https://paulcollege.unh.edu/person/bingjin-xue)
-
-## For students
-
-If you are a UNH undergraduate thinking about an honors thesis or research project in applied microeconomics, health economics, or econometrics, please reach out. Include a short paragraph about what you are interested in and a transcript.

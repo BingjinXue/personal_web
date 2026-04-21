@@ -24,14 +24,13 @@ website:
         href: mailto:bingjin.xue@unh.edu
         aria-label: Email
       - text: "Scholar"
-        href: https://scholar.google.com/citations?user=YOUR_ID
+        href: https://scholar.google.com/citations?hl=en&user=GjuByKMAAAAJ
         aria-label: Google Scholar
       - icon: github
-        href: https://github.com/YOUR_USERNAME
+        href: https://github.com/bingjinxue
         aria-label: GitHub
   page-footer:
-    left: "© 2026 Bingjin Xue"
-    right: "Built with [Quarto](https://quarto.org)"
+    center: "© 2026 Bingjin Xue"
   open-graph: true
   twitter-card: true
 

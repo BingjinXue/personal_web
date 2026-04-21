@@ -30,14 +30,3 @@ Undergraduate introduction to predictive modeling. Covers linear and logistic re
 Standard undergraduate microeconomics. Producer and consumer theory, market structure, welfare analysis, externalities.
 :::
 
-## Interactive demos
-
-Browser-based visualizations built for classroom use. Each runs locally — no install, no accounts.
-
-- [**Linear regression visualizer**](demos/regression-visualizer.html) — drag points to see how OLS reacts. Live residuals, R², and coefficient estimates.
-- [**Omitted variable bias**](demos/ovb-demo.html) — toggle the omitted variable on and off and watch the bias in the estimated coefficient move in the predicted direction.
-- [**Cobb-Douglas utility maximization**](demos/cobb-douglas.html) — interactive budget constraint with Slutsky decomposition into income and substitution effects.
-
-## Advising
-
-I am happy to talk with UNH undergraduates interested in research in applied microeconomics, health economics, or econometrics. Email me to set up a time.
