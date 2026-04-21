@@ -1,10 +1,34 @@
 ---
-title: "Bingjin Xue"
+title: "Bingjin (Ben) Xue"
 page-layout: full
-pagetitle: "Bingjin Xue — Economist"
+pagetitle: "Bingjin (Ben) Xue — Economist"
 include-in-header:
   - text: |
-      <meta name="description" content="Bingjin Xue — Assistant Professor of Economics at the University of New Hampshire. Research in health economics, applied microeconometrics, and causal inference.">
+      <meta name="description" content="Bingjin Xue (Ben Xue) — Assistant Professor of Economics at the University of New Hampshire. Research in health economics, applied microeconometrics, and causal inference.">
+      <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Bingjin Xue",
+        "alternateName": ["Ben Xue", "Bingjin (Ben) Xue"],
+        "givenName": "Bingjin",
+        "additionalName": "Ben",
+        "familyName": "Xue",
+        "jobTitle": "Assistant Professor of Economics",
+        "affiliation": {
+          "@type": "CollegeOrUniversity",
+          "name": "University of New Hampshire",
+          "department": "Peter T. Paul College of Business and Economics"
+        },
+        "email": "bingjin.xue@unh.edu",
+        "url": "https://bingjinxue.github.io/personal_web/",
+        "sameAs": [
+          "https://scholar.google.com/citations?hl=en&user=GjuByKMAAAAJ",
+          "https://github.com/bingjinxue",
+          "https://www.linkedin.com/in/xuebingjin/"
+        ]
+      }
+      </script>
 ---
 
 ::: {.home-hero}
@@ -20,7 +44,7 @@ My current research interests fall into three categories: 1) how does health inf
 
 <div class="links">
 [Email](mailto:bingjin.xue@unh.edu) ·
-[CV](assets/CV.pdf) ·
+[CV](assets/Bingjin Xue CV.pdf) ·
 [Google Scholar](https://scholar.google.com/citations?hl=en&user=GjuByKMAAAAJ) ·
 [GitHub](https://github.com/bingjinxue) ·
 [LinkedIn](https://www.linkedin.com/in/xuebingjin/) .

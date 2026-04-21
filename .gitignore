@@ -10,6 +10,8 @@
 .vscode/
 .idea/
 *.swp
+.Rhistory
+.Rproj.user/
 
 # Local-only docs (not part of the deployed site)
 .claude/
