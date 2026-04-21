@@ -11,7 +11,7 @@ pagetitle: "Teaching — Bingjin Xue"
 
 Machine Learning for Economics bridges economic reasoning with the computational power of AI. Rather than treating machine learning as a black box, this course opens it—training students to think like economists who engineer algorithms with purpose and interpretability. Students will learn to use Python to build, test, and explain machine learning models grounded in economic theory and data. The goal is to equip future economists with the skills to not only apply machine learning responsibly, but also to extend and adapt these methods in pursuit of rigorous economic research and policy evaluation.
 
-[Syllabus](assets/ECON898-S26-Xue.pdf){aria-label="Syllabus PDF"}
+[Syllabus](assets/ECON898-S26-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
@@ -20,7 +20,7 @@ Machine Learning for Economics bridges economic reasoning with the computational
 
 In this course, you will learn the fundamentals of causal inference and econometric analysis. The course starts with three preliminary chapters: linear algebra, statistics, and asymptotic theory; and then proceeds with key estimation methods: OLS, GLS, MLE, GMM, IV, DID, TWFE. We will discuss endogeneity issues and advanced topics in causal inference.
 
-[Syllabus](assets/ECON565-S26-Xue.pdf){aria-label="Syllabus PDF"}
+[Syllabus](assets/ECON565-S26-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
@@ -29,7 +29,7 @@ In this course, you will learn the fundamentals of causal inference and economet
 
 This course expands upon core topics in statistics through the study and practice of data management, data analysis, and statistical programming. Statistical programming and analytical skills are the key components of predictive modeling. Students will develop tools for collecting, organizing, interpreting, presenting, and analyzing business information. As an economics course an emphasis will be placed on how to use data to improve the information needed to make sound economic and business decisions based on marginal analysis.
 
-[Syllabus](assets/ECON565-S26-Xue.pdf){aria-label="Syllabus PDF"}
+[Syllabus](assets/ECON565-S26-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
@@ -38,6 +38,6 @@ This course expands upon core topics in statistics through the study and practic
 
 In this course we examine how individuals, firms and societies make choices when faced with scarcity. We will focus on the role of markets, how prices are determined, and the influence that prices have on how individuals and societies allocate resources and time. We will identify cases where markets don’t work well and explore the causes of market failure. Finally, we will examine firms and how they interact in different competitive environments. Collectively, our examination of economics will give us a way of understanding how to make the best use of natural resources, technology, and people's unique skills.
 
-[Syllabus](assets/ECON402-F25-Xue.pdf){aria-label="Syllabus PDF"}
+[Syllabus](assets/ECON402-F25-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
 
