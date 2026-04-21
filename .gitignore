@@ -11,9 +11,10 @@
 .idea/
 *.swp
 
-# Claude Code local state
+# Local-only docs (not part of the deployed site)
 .claude/
 CLAUDE.md
+README.md
 
 # Node / misc
 node_modules/
