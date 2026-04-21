@@ -8,7 +8,6 @@ website:
   title: "Bingjin Xue"
   description: "Assistant Professor of Economics, University of New Hampshire"
   site-url: https://bingjinxue.github.io/personal_web
-  favicon: assets/favicon.ico
   navbar:
     pinned: true
     left:
