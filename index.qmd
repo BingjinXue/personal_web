@@ -44,7 +44,7 @@ My current research interests fall into three categories: 1) how does health inf
 
 <div class="links">
 [Email](mailto:bingjin.xue@unh.edu) ·
-[CV](assets/Bingjin Xue CV.pdf) ·
+[CV](assets/Bingjin Xue CV.pdf){target="_blank"} ·
 [Google Scholar](https://scholar.google.com/citations?hl=en&user=GjuByKMAAAAJ) ·
 [GitHub](https://github.com/bingjinxue) ·
 [LinkedIn](https://www.linkedin.com/in/xuebingjin/) .

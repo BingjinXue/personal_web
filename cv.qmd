@@ -3,7 +3,7 @@ title: "CV"
 pagetitle: "CV — Bingjin Xue"
 ---
 
-Full CV: [**PDF**](assets/Bingjin Xue CV.pdf) *(updated April 2026)*
+Full CV: [**PDF**](assets/Bingjin Xue CV.pdf){target="_blank"} *(updated April 2026)*
 
 ## Positions
 
