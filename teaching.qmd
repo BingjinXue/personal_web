@@ -20,7 +20,7 @@ Machine Learning for Economics bridges economic reasoning with the computational
 
 In this course, you will learn the fundamentals of causal inference and econometric analysis. The course starts with three preliminary chapters: linear algebra, statistics, and asymptotic theory; and then proceeds with key estimation methods: OLS, GLS, MLE, GMM, IV, DID, TWFE. We will discuss endogeneity issues and advanced topics in causal inference.
 
-[Syllabus](assets/ECON565-S26-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
+[Syllabus](assets/ECON927-S25-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
