@@ -29,6 +29,9 @@ website:
       - icon: github
         href: https://github.com/bingjinxue
         aria-label: GitHub
+      - icon: linkedin
+        href: https://www.linkedin.com/in/xuebingjin/
+        aria-label: Linkedin
   page-footer:
     center: "© 2026 Bingjin Xue"
   open-graph: true
