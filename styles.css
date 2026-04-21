@@ -103,9 +103,10 @@ a:hover {
 }
 .home-hero img {
   width: 180px;
-  height: 180px;
+  height: 270px;
   border-radius: 4px;
   object-fit: cover;
+  object-position: center top;
   box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 .home-hero h1 {
@@ -133,7 +134,7 @@ a:hover {
     gap: 1.25rem;
     text-align: left;
   }
-  .home-hero img { width: 140px; height: 140px; }
+  .home-hero img { width: 140px; height: 210px; }
 }
 
 /* ---------- Paper entries ---------- */

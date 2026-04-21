@@ -3,30 +3,41 @@ title: "Teaching"
 pagetitle: "Teaching — Bingjin Xue"
 ---
 
-## Current courses
+## Current courses at University of New Hampshire
 
 ::: {.course}
 ### ECON 898 / 720 — Machine Learning for Economists
-<div class="term">Graduate · Spring 2026</div>
+<div class="term">Graduate · Spring 2024 - Present</div>
 
-An applied course introducing modern predictive modeling and machine learning methods to graduate economists. Topics include regularized regression, tree-based methods, neural networks, and the use of ML for causal inference (double/debiased ML, causal forests). Emphasis on econometric intuition and reproducible workflows.
+Machine Learning for Economics bridges economic reasoning with the computational power of AI. Rather than treating machine learning as a black box, this course opens it—training students to think like economists who engineer algorithms with purpose and interpretability. Students will learn to use Python to build, test, and explain machine learning models grounded in economic theory and data. The goal is to equip future economists with the skills to not only apply machine learning responsibly, but also to extend and adapt these methods in pursuit of rigorous economic research and policy evaluation.
 
-[Syllabus](assets/econ898-syllabus.pdf){aria-label="Syllabus PDF"}
+[Syllabus](assets/ECON898-S26-Xue.pdf){aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
-### ECO 565 — Predictive Modeling
-<div class="term">Undergraduate · Fall 2025</div>
+### ECON 927 — Econometrics II
+<div class="term">Graduate · Spring 2024 - Present</div>
 
-Undergraduate introduction to predictive modeling. Covers linear and logistic regression, resampling, model selection, and an introduction to tree-based methods. Projects use real economic data.
+In this course, you will learn the fundamentals of causal inference and econometric analysis. The course starts with three preliminary chapters: linear algebra, statistics, and asymptotic theory; and then proceeds with key estimation methods: OLS, GLS, MLE, GMM, IV, DID, TWFE. We will discuss endogeneity issues and advanced topics in causal inference.
 
-[Syllabus](assets/eco565-syllabus.pdf){aria-label="Syllabus PDF"}
+[Syllabus](assets/ECON565-S26-Xue.pdf){aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
-### ECO 402 — Principles of Microeconomics
-<div class="term">Undergraduate · recurring</div>
+### ECON 565 — Predictive Modeling
+<div class="term">Undergraduate · Spring 2026 - Present</div>
 
-Standard undergraduate microeconomics. Producer and consumer theory, market structure, welfare analysis, externalities.
+This course expands upon core topics in statistics through the study and practice of data management, data analysis, and statistical programming. Statistical programming and analytical skills are the key components of predictive modeling. Students will develop tools for collecting, organizing, interpreting, presenting, and analyzing business information. As an economics course an emphasis will be placed on how to use data to improve the information needed to make sound economic and business decisions based on marginal analysis.
+
+[Syllabus](assets/ECON565-S26-Xue.pdf){aria-label="Syllabus PDF"}
+:::
+
+::: {.course}
+### ECON 402 — Principles of Microeconomics
+<div class="term">Undergraduate · Spring 2023 - Present </div>
+
+In this course we examine how individuals, firms and societies make choices when faced with scarcity. We will focus on the role of markets, how prices are determined, and the influence that prices have on how individuals and societies allocate resources and time. We will identify cases where markets don’t work well and explore the causes of market failure. Finally, we will examine firms and how they interact in different competitive environments. Collectively, our examination of economics will give us a way of understanding how to make the best use of natural resources, technology, and people's unique skills.
+
+[Syllabus](assets/ECON402-F25-Xue.pdf){aria-label="Syllabus PDF"}
 :::
 

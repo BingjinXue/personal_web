@@ -13,10 +13,6 @@ include-in-header:
 
 <div class="bio">
 
-# Bingjin Xue
-
-<div class="affiliation">Assistant Professor of Economics · Peter T. Paul College of Business and Economics · University of New Hampshire</div>
-
 <p>
 I am an Assistant Professor of Economics at the University of New Hampshire. My research focuses on causal inference in the field of health economics using econometric methods, machine learning, and large-scale data.
 My current research interests fall into three categories: 1) how does health information technology affect healthcare providers and consumers. 2) the impact of public policies on the population mental health and wellbeing. 3) the economics of inequality and vulnerable population. 
