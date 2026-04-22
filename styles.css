@@ -170,6 +170,52 @@ a:hover {
   color: var(--ink-soft);
   margin: 0.5rem 0;
 }
+
+/* ---------- Collapsible abstract / course body ---------- */
+.paper-abstract,
+.course-body {
+  margin: 0.5rem 0 0.35rem;
+}
+.paper-abstract > summary,
+.course-body > summary {
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--accent);
+  list-style: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.1rem 0;
+  user-select: none;
+}
+.paper-abstract > summary::-webkit-details-marker,
+.course-body > summary::-webkit-details-marker {
+  display: none;
+}
+.paper-abstract > summary::before,
+.course-body > summary::before {
+  content: "▸";
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  transition: transform 0.15s ease;
+}
+.paper-abstract[open] > summary::before,
+.course-body[open] > summary::before {
+  content: "▾";
+}
+.paper-abstract > summary:hover,
+.course-body > summary:hover {
+  color: var(--accent-hover);
+}
+.paper-abstract[open] > p,
+.course-body[open] > p {
+  font-size: 0.98rem;
+  color: var(--ink-soft);
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
 .paper .actions {
   font-family: var(--font-sans);
   font-size: 0.85rem;

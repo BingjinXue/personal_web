@@ -7,37 +7,56 @@ pagetitle: "Teaching — Bingjin Xue"
 
 ::: {.course}
 ### ECON 898 / 720 — Machine Learning for Economists
-<div class="term">Graduate · Spring 2024 - Present</div>
+<div class="term">Graduate · Spring 2024 – present</div>
 
-Machine Learning for Economics bridges economic reasoning with the computational power of AI. Rather than treating machine learning as a black box, this course opens it—training students to think like economists who engineer algorithms with purpose and interpretability. Students will learn to use Python to build, test, and explain machine learning models grounded in economic theory and data. The goal is to equip future economists with the skills to not only apply machine learning responsibly, but also to extend and adapt these methods in pursuit of rigorous economic research and policy evaluation.
+<details class="course-body">
+<summary>Description</summary>
+
+Bridges economic reasoning with modern machine learning. Students learn to build, test, and interpret models in Python — from regularized regression to causal forests — grounded in economic theory. The goal is not to treat machine learning as a black box, but to train economists to engineer algorithms with purpose and interpretability for research and policy evaluation.
+
+</details>
 
 [Syllabus](assets/ECON898-S26-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
 ### ECON 927 — Econometrics II
-<div class="term">Graduate · Spring 2024 - Present</div>
+<div class="term">Graduate · Spring 2024 – present</div>
 
-In this course, you will learn the fundamentals of causal inference and econometric analysis. The course starts with three preliminary chapters: linear algebra, statistics, and asymptotic theory; and then proceeds with key estimation methods: OLS, GLS, MLE, GMM, IV, DID, TWFE. We will discuss endogeneity issues and advanced topics in causal inference.
+<details class="course-body">
+<summary>Description</summary>
+
+Second graduate course in econometrics, with a focus on identification and inference. Starts with three preliminaries — linear algebra, statistics, and asymptotic theory — then covers OLS, GLS, MLE, GMM, IV, and modern difference-in-differences (including TWFE). Substantial time on endogeneity and the design choices that make causal estimates credible.
+
+</details>
 
 [Syllabus](assets/ECON927-S25-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
 ### ECON 565 — Predictive Modeling
-<div class="term">Undergraduate · Spring 2026 - Present</div>
+<div class="term">Undergraduate · Spring 2026 – present</div>
 
-This course expands upon core topics in statistics through the study and practice of data management, data analysis, and statistical programming. Statistical programming and analytical skills are the key components of predictive modeling. Students will develop tools for collecting, organizing, interpreting, presenting, and analyzing business information. As an economics course an emphasis will be placed on how to use data to improve the information needed to make sound economic and business decisions based on marginal analysis.
+<details class="course-body">
+<summary>Description</summary>
+
+Undergraduate course on turning data into decisions. Students develop statistical programming skills — collecting, cleaning, analyzing, and presenting data — and build predictive models. The economics emphasis is on using data to sharpen marginal-analysis decisions in business and policy.
+
+</details>
 
 [Syllabus](assets/ECON565-S26-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
 
 ::: {.course}
 ### ECON 402 — Principles of Microeconomics
-<div class="term">Undergraduate · Spring 2023 - Present </div>
+<div class="term">Undergraduate · Fall 2023 – present</div>
 
-In this course we examine how individuals, firms and societies make choices when faced with scarcity. We will focus on the role of markets, how prices are determined, and the influence that prices have on how individuals and societies allocate resources and time. We will identify cases where markets don’t work well and explore the causes of market failure. Finally, we will examine firms and how they interact in different competitive environments. Collectively, our examination of economics will give us a way of understanding how to make the best use of natural resources, technology, and people's unique skills.
+<details class="course-body">
+<summary>Description</summary>
+
+Introductory microeconomics. How individuals, firms, and societies make choices under scarcity. We cover markets, prices, resource allocation, market failures, firm behavior, and competitive environments — leaving students with a framework for thinking about how to make the best use of resources, technology, and skills.
+
+</details>
 
 [Syllabus](assets/ECON402-F25-Xue.pdf){target="_blank" aria-label="Syllabus PDF"}
 :::
-
