@@ -29,7 +29,7 @@ Can a single act of violence disrupt an entire regional tourism market? We use t
 
 [with Dapeng Chen and Shin-Yi Chou]{.authors}
 
-[*Journal of Development Economics*, 2025, 103670.]{.venue}
+[*Journal of Development Economics*, 2026, 179, 103670.]{.venue}
 
 <details class="paper-abstract">
 <summary>Abstract</summary>
