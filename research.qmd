@@ -6,7 +6,7 @@ pagetitle: "Research — Bingjin Xue"
 ## Published and Forthcoming
 
 ::: {.paper}
-[Tourism Destinations in Crisis: Economic Ripple Effects]{.title}
+[Destination Crisis and Economic Ripple Effects in Platform-Mediated Tourism Markets]{.title}
 
 [with Hanna Lee, Yifei Wang, and Jinwon Kim]{.authors}
 
