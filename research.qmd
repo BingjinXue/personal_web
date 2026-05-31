@@ -165,8 +165,6 @@ We study empirical design composition — layering one identification strategy o
 </details>
 :::
 
-## Working Papers
-
 ::: {.paper}
 [Beyond Overdose Prevention: Naloxone Coprescription Laws and the Path to Treatment]{.title}
 
@@ -181,6 +179,8 @@ Can coprescription mandates expand naloxone access without fueling opioid misuse
 
 </details>
 :::
+
+## Working Papers
 
 ::: {.paper}
 [Pressure from Students' Peer Parents]{.title}
