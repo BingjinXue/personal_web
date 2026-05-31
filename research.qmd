@@ -168,11 +168,11 @@ We study empirical design composition — layering one identification strategy o
 ## Working Papers
 
 ::: {.paper}
-[Naloxone Coprescription Laws: Expanding Safety Without Fueling Misuse]{.title}
+[Beyond Overdose Prevention: Naloxone Coprescription Laws and the Path to Treatment]{.title}
 
 [with Shin-Yi Chou and Jiarun Li]{.authors}
 
-[Working paper, 2026.]{.venue}
+[[Under review]{.tag}]{.venue}
 
 <details class="paper-abstract">
 <summary>Abstract</summary>
