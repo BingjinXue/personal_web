@@ -5,6 +5,7 @@ project:
     - "*.qmd"
   resources:
     - "google*.html"
+    - "resources/**"
     - "CNAME"
 
 website:
@@ -18,6 +19,8 @@ website:
         href: research.qmd
       - text: "Teaching"
         href: teaching.qmd
+      - text: "Resources"
+        href: resources.qmd
       - text: "CV"
         href: cv.qmd
       - text: "Contact"

@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EITC × Minimum Wage — State Envelope</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--fs:1;--cFed:#e4e2dc;--cMW:#e0c97f;--cEI:#7de8c9;--cBoth:#c970e8;--cFedAlt:#0a0a0a}
+[data-theme="dark"]{--bg:#12121a;--bg2:#191922;--sf:#1e1e28;--bd:#2e2e3a;--tx:#e4e2dc;--tx2:#c8c5bc;--mt:#7a7870;--glow:rgba(74,158,255,.06);--overlay:rgba(25,25,34,.94);--cFed:#f4f2ed}
+[data-theme="light"]{--bg:#f4f2ed;--bg2:#eae8e2;--sf:#ffffff;--bd:#d4d0c8;--tx:#1a1a1e;--tx2:#3a3a40;--mt:#8a8680;--glow:rgba(74,158,255,.08);--overlay:rgba(255,255,255,.94);--cFed:#0a0a0a;--cMW:#8a6a10;--cEI:#1a7a5a;--cBoth:#7028a8}
+body{background:var(--bg);color:var(--tx);font-family:'Libre Baskerville',Georgia,serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:14px 8px;transition:background .3s,color .3s}
+h1{font-family:'JetBrains Mono',monospace;font-size:calc(13px*var(--fs));font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mt);margin-bottom:2px}
+.sub{font-size:calc(11px*var(--fs));color:var(--mt);font-style:italic;margin-bottom:12px;text-align:center;line-height:1.35}
+.mono{font-family:'JetBrains Mono',monospace}
+.box{display:flex;flex-direction:column;gap:calc(8px*var(--fs));width:100%;max-width:1020px}
+
+/* Top bar */
+.topbar{display:flex;justify-content:flex-end;gap:6px;align-items:center;flex-wrap:wrap}
+.topbar-btn{font-family:'JetBrains Mono',monospace;font-size:calc(8px*var(--fs));padding:3px 8px;border-radius:4px;border:1px solid var(--bd);background:var(--sf);color:var(--mt);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px}
+.topbar-btn:hover{border-color:var(--tx);color:var(--tx)}
+.font-btns{display:flex;gap:2px}
+.font-btns button{width:calc(24px*var(--fs));height:calc(24px*var(--fs));font-size:calc(12px*var(--fs));border-radius:3px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:'JetBrains Mono',monospace}
+.font-btns button:hover{background:var(--bd)}
+
+/* Param table */
+.pt{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:calc(7px*var(--fs)) calc(10px*var(--fs));font-family:'JetBrains Mono',monospace;font-size:calc(8px*var(--fs));color:var(--mt);display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr 1fr 1fr;gap:calc(2px*var(--fs)) calc(10px*var(--fs));line-height:1.4;transition:all .3s}
+.pt .hd{color:var(--tx);font-weight:700;font-size:calc(8.5px*var(--fs))}
+.pt .vmf{color:var(--cFed)}.pt .vM{color:var(--cMW)}.pt .vE{color:var(--cEI)}.pt .vB{color:var(--cBoth)}
+
+/* Chart */
+.chart-area{position:relative;background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:10px;box-shadow:0 2px 20px var(--glow)}
+canvas{display:block;width:100%;cursor:crosshair;border-radius:4px}
+.opt-overlay{position:absolute;top:10px;right:12px;background:var(--overlay);border:1px solid var(--bd);border-radius:6px;padding:calc(6px*var(--fs)) calc(8px*var(--fs));font-family:'JetBrains Mono',monospace;font-size:calc(8px*var(--fs));color:var(--mt);line-height:1.5;pointer-events:none;backdrop-filter:blur(8px);min-width:180px;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+.opt-overlay .ot-hd{font-size:calc(9px*var(--fs));font-weight:700;color:var(--tx);margin-bottom:4px;border-bottom:1px solid var(--bd);padding-bottom:3px}
+.opt-overlay .ot-row{display:grid;grid-template-columns:74px auto;gap:4px;padding:1.5px 0;align-items:baseline}
+.opt-overlay .ot-lbl{color:var(--mt)}.opt-overlay .ot-val{color:var(--tx);text-align:right}
+
+/* Tooltip */
+.tt{position:absolute;background:var(--overlay);border:1px solid var(--bd);border-radius:6px;padding:calc(5px*var(--fs)) calc(8px*var(--fs));font-family:'JetBrains Mono',monospace;font-size:calc(8.5px*var(--fs));color:var(--tx);line-height:1.45;pointer-events:none;backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:10;min-width:160px;display:none}
+.tt .tt-st{font-size:calc(11px*var(--fs));font-weight:700;color:var(--tx);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.tt .tt-row{display:grid;grid-template-columns:auto 1fr;gap:6px;color:var(--mt);font-size:calc(8px*var(--fs))}
+.tt .tt-row span:last-child{color:var(--tx);text-align:right}
+.tt .swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+
+/* Controls */
+.gr{display:grid;gap:calc(8px*var(--fs))}.g2{grid-template-columns:1fr 1fr}
+.cg{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:calc(10px*var(--fs)) calc(12px*var(--fs));transition:background .3s,border .3s}
+.cg label{font-family:'JetBrains Mono',monospace;font-size:calc(8px*var(--fs));text-transform:uppercase;letter-spacing:.04em;color:var(--mt);display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.cg label .v{font-size:calc(11px*var(--fs));font-weight:700;color:var(--tx)}
+.sd{font-size:calc(7.5px*var(--fs));color:var(--mt);margin-top:3px;font-family:'JetBrains Mono',monospace;line-height:1.3}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--bd);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:calc(16px*var(--fs));height:calc(16px*var(--fs));border-radius:50%;cursor:pointer;border:2px solid var(--bg);background:#ff9e64}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+.tr{display:flex;gap:5px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.tb{font-family:'JetBrains Mono',monospace;font-size:calc(9px*var(--fs));padding:calc(3px*var(--fs)) calc(9px*var(--fs));border-radius:4px;border:1px solid var(--bd);background:transparent;color:var(--mt);cursor:pointer;transition:all .12s;white-space:nowrap}
+.tb:hover{border-color:var(--tx);color:var(--tx)}
+.tb.on{border-color:currentColor;background:rgba(255,255,255,.04)}
+[data-theme="light"] .tb.on{background:rgba(0,0,0,.04)}
+.tb.tbM.on{color:var(--cMW)}.tb.tbE.on{color:var(--cEI)}.tb.tbB.on{color:var(--cBoth)}.tb.tbN.on{color:var(--mt)}
+
+/* State panel */
+.state-panel{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:calc(10px*var(--fs)) calc(12px*var(--fs));font-family:'JetBrains Mono',monospace;font-size:calc(9px*var(--fs))}
+.sp-row{margin-bottom:7px}
+.sp-row:last-child{margin-bottom:0}
+.sp-title{font-size:calc(9.5px*var(--fs));font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.sp-title .swatch{width:11px;height:11px;border-radius:2px;display:inline-block}
+.sp-title .ct{color:var(--mt);font-weight:400;margin-left:auto;font-size:calc(8px*var(--fs))}
+.state-grid{display:flex;flex-wrap:wrap;gap:3px}
+.st{padding:calc(2.5px*var(--fs)) calc(6px*var(--fs));border-radius:3px;font-size:calc(7.5px*var(--fs));line-height:1.2;border:1px solid transparent;cursor:default;transition:all .15s}
+.st.mw{background:rgba(224,201,127,.10);color:var(--cMW);border-color:rgba(224,201,127,.22)}
+.st.ei{background:rgba(125,232,201,.10);color:var(--cEI);border-color:rgba(125,232,201,.22)}
+.st.bt{background:rgba(201,112,232,.12);color:var(--cBoth);border-color:rgba(201,112,232,.24)}
+.st.nn{background:rgba(255,255,255,.03);color:var(--mt)}
+[data-theme="light"] .st.mw{background:rgba(138,106,16,.06)}
+[data-theme="light"] .st.ei{background:rgba(26,122,90,.06)}
+[data-theme="light"] .st.bt{background:rgba(112,40,168,.06)}
+[data-theme="light"] .st.nn{background:rgba(0,0,0,.03)}
+.st:hover{transform:translateY(-1px);filter:brightness(1.2)}
+
+/* Envelope summary table */
+.env-tbl{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:calc(8px*var(--fs));margin-top:3px}
+.env-tbl thead th{font-weight:600;color:var(--mt);text-align:left;padding:3px 7px;border-bottom:1px solid var(--bd);font-size:calc(7.5px*var(--fs));letter-spacing:.02em}
+.env-tbl thead th:nth-child(2){text-align:center}
+.env-tbl tbody td{padding:5px 7px;border-bottom:1px solid var(--bd);vertical-align:top;color:var(--tx);line-height:1.35}
+.env-tbl tbody td:first-child{font-weight:600;white-space:nowrap}
+.env-tbl tbody td:nth-child(2){text-align:center;color:var(--mt)}
+.env-tbl tbody tr:last-child td{border-bottom:none}
+.env-tbl .swatch{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.sp-env{padding-bottom:6px;border-bottom:1px solid var(--bd);margin-bottom:8px}
+
+/* Reference drawer */
+.ref-toggle{font-family:'JetBrains Mono',monospace;font-size:calc(10px*var(--fs));padding:calc(8px*var(--fs)) calc(14px*var(--fs));border-radius:8px;border:1px solid var(--bd);background:var(--sf);color:var(--tx);cursor:pointer;width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:all .2s}
+.ref-toggle:hover{border-color:var(--tx)}
+.ref-toggle .arrow{transition:transform .2s;font-size:calc(12px*var(--fs))}
+.ref-toggle.open .arrow{transform:rotate(180deg)}
+.ref-drawer{max-height:0;overflow:hidden;transition:max-height .35s ease;border-radius:0 0 8px 8px}
+.ref-drawer.open{max-height:2400px}
+.ref-inner{background:var(--sf);border:1px solid var(--bd);border-top:none;border-radius:0 0 8px 8px;overflow:hidden}
+.ref-tabs{display:flex;border-bottom:1px solid var(--bd);overflow-x:auto}
+.ref-tab{font-family:'JetBrains Mono',monospace;font-size:calc(8.5px*var(--fs));padding:calc(8px*var(--fs)) calc(14px*var(--fs));background:transparent;border:none;color:var(--mt);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s}
+.ref-tab:hover{color:var(--tx)}
+.ref-tab.active{color:var(--cBoth);border-bottom-color:var(--cBoth)}
+.ref-panel{display:none;padding:calc(12px*var(--fs)) calc(14px*var(--fs));font-family:'JetBrains Mono',monospace;font-size:calc(9px*var(--fs));color:var(--tx2);line-height:1.55;max-height:380px;overflow-y:auto}
+.ref-panel.active{display:block}
+.ref-panel strong{color:var(--tx)}
+.ref-panel a{color:#4a9eff;text-decoration:none;border-bottom:1px dotted #4a9eff}
+.ref-panel a:hover{opacity:.7}
+
+/* Year slider container */
+.yr-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:8px;padding:calc(10px*var(--fs)) calc(14px*var(--fs))}
+.yr-wrap .yr-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.yr-wrap .yr-title{font-family:'JetBrains Mono',monospace;font-size:calc(9px*var(--fs));text-transform:uppercase;letter-spacing:.05em;color:var(--mt)}
+.yr-wrap .yr-val{font-family:'JetBrains Mono',monospace;font-size:calc(20px*var(--fs));font-weight:700;color:#ff9e64;letter-spacing:.04em}
+.yr-wrap .yr-ctx{font-family:'JetBrains Mono',monospace;font-size:calc(8px*var(--fs));color:var(--mt);margin-top:5px;line-height:1.35}
+.yr-wrap input[type=range]{height:5px}
+.yr-wrap input[type=range]::-webkit-slider-thumb{width:calc(18px*var(--fs));height:calc(18px*var(--fs))}
+</style>
+</head>
+<body>
+<h1>EITC × Minimum Wage — State Envelope, <span id="titleYear">2015</span></h1>
+<p class="sub">Annual budget constraint, married couple with 2 children · federal-only reference (heavy) vs. all 50 states + DC · width at kinks = MW variation · height of plateau = EITC variation</p>
+<div class="box">
+
+<div class="topbar">
+  <span class="mono" style="font-size:calc(8px*var(--fs));color:var(--mt)">Font:</span>
+  <div class="font-btns">
+    <button onclick="adjustFont(-1)">A&minus;</button>
+    <button onclick="adjustFont(0)">A</button>
+    <button onclick="adjustFont(1)">A+</button>
+  </div>
+  <button class="topbar-btn" onclick="toggleTheme()"><span id="themeIcon">&#9728;</span> <span id="themeLabel">Light</span></button>
+</div>
+
+<div class="pt" id="pt"></div>
+
+<div class="chart-area">
+  <canvas id="ch" width="1020" height="560"></canvas>
+  <div class="opt-overlay" id="optOvr"></div>
+  <div class="tt" id="tt"></div>
+</div>
+
+<!-- Year slider -->
+<div class="yr-wrap">
+  <div class="yr-head">
+    <span class="yr-title">Tax Year</span>
+    <span class="yr-val" id="yrL">2015</span>
+  </div>
+  <input type="range" id="yrS" min="1991" max="2025" step="1" value="2015">
+  <div class="yr-ctx" id="yrCtx"></div>
+</div>
+
+<!-- State summary panel -->
+<div class="state-panel" id="stPanel"></div>
+
+<!-- Display toggles -->
+<div class="gr g2">
+  <div class="cg">
+    <label>State EITC top-up <span class="v" id="seL" style="color:var(--cEI)">Included</span></label>
+    <div class="tr">
+      <button class="tb on" id="seOn" style="color:var(--cEI)">On</button>
+      <button class="tb" id="seOff" style="color:var(--cEI)">Off (MW only)</button>
+    </div>
+    <div class="sd">When on, lines lift by state_rate&times;federal EITC. When off, only MW variation drives separation.</div>
+  </div>
+  <div class="cg">
+    <label>Non-refundable handling <span class="v" id="rfL" style="color:var(--cEI)">As cash</span></label>
+    <div class="tr">
+      <button class="tb on" id="rfCash">Treat as cash</button>
+      <button class="tb" id="rfZero">Zero out</button>
+    </div>
+    <div class="sd">MW workers owe ~$0 state tax, so non-refundable credits often don't bind. &ldquo;Zero out&rdquo; reflects this; &ldquo;as cash&rdquo; treats statutory rate as the marginal incentive.</div>
+  </div>
+</div>
+
+<div class="cg">
+  <label>Show categories</label>
+  <div class="tr">
+    <button class="tb tbB on" id="catBoth">Higher MW + State EITC</button>
+    <button class="tb tbM on" id="catMW">Higher MW only</button>
+    <button class="tb tbE on" id="catEI">State EITC only</button>
+    <button class="tb tbN" id="catNN">Neither (overlap fed)</button>
+  </div>
+</div>
+
+<div class="gr g2">
+  <div class="cg">
+    <label>Kink markers <span class="v" id="kdL" style="color:#ff9e64">On</span></label>
+    <div class="tr">
+      <button class="tb on" id="kdOn">On</button>
+      <button class="tb" id="kdOff">Off</button>
+    </div>
+    <div class="sd">Dots at plateau begin, phase-out begin, phase-out end. Federal coords always labeled. Hover any state to label its kinks.</div>
+  </div>
+  <div class="cg">
+    <label>Variation envelope <span class="v" id="evL" style="color:var(--cBoth)">On</span></label>
+    <div class="tr">
+      <button class="tb on" id="evOn">On</button>
+      <button class="tb" id="evOff">Off</button>
+    </div>
+    <div class="sd">Bounding box per category per kink, showing the min&ndash;max range of (hours, income) across states in that category.</div>
+  </div>
+</div>
+
+<!-- Reference drawer -->
+<button class="ref-toggle" onclick="toggleRef()" id="refBtn">
+  <span>&#128214; Reference &amp; Notes</span>
+  <span class="arrow">&#9662;</span>
+</button>
+<div class="ref-drawer" id="refDrawer">
+<div class="ref-inner">
+<div class="ref-tabs" id="refTabs">
+  <button class="ref-tab active" data-tab="read">How to read</button>
+  <button class="ref-tab" data-tab="tax">Tax treatment</button>
+  <button class="ref-tab" data-tab="data">Data &amp; methods</button>
+  <button class="ref-tab" data-tab="refnd">Refundability</button>
+  <button class="ref-tab" data-tab="src">Sources</button>
+</div>
+
+<div class="ref-panel active" data-tab="read">
+<strong>What's plotted.</strong> Each line is the annual budget constraint
+y(h) = w&middot;h + EITC(w&middot;h) for a married couple with 2 children, where w is the state minimum wage
+and EITC uses the federal 2-child MFJ parameters for the selected tax year. State EITC top-up
+(when on) adds state_rate &times; federal_EITC. <strong>No federal or state income tax is subtracted,
+and no FICA either</strong> — the y-axis is gross earnings plus credits. See the &ldquo;Tax treatment&rdquo;
+tab for what this implies and why this is the right framing for showing cross-state policy variation.<br><br>
+
+<strong>The two policy dimensions.</strong>
+<span style="color:var(--cMW)">Higher state MW</span> rotates the line counter-clockwise: the
+slope in every segment is steeper, and the kink at the phase-in ceiling, plateau exit, and
+phase-out exit all shift <em>left</em> in hours-space (since you reach the same earnings level in
+fewer hours). <span style="color:var(--cEI)">Higher state EITC</span> raises the plateau and
+steepens the phase-in slope. The lateral spread of the kinks reflects the cross-section of state
+MWs; the vertical spread of the plateaus reflects the cross-section of state EITCs.<br><br>
+
+<strong>Why the diagonal pattern.</strong> States in the top-left of the envelope have both high MW
+and a generous state EITC (think CA-2019, DC, MN, NY, VT). States in the bottom-right are at the federal MW
+with no state top-up (most southern states, MS, AL, TX, etc.) and are drawn behind the heavy federal line.<br><br>
+
+<strong>Reading the variation envelope.</strong> The translucent rectangles per category per
+kink show the (hours, income) range covered by states in that category. Their shadows extend to
+the x-axis (showing the range of kink-hours) and to the y-axis (showing the range of kink-incomes).
+When a dimension has no variation, the shadow collapses to a line: <span style="color:var(--cMW)">MW
+only</span> has no income variation at the kink (income is fixed at the federal kink height), so
+its y-shadow is a line; <span style="color:var(--cEI)">EITC only</span> has no hours variation
+(hours are fixed at the federal kink-hour), so its x-shadow is a line. The
+<span style="color:var(--cBoth)">interaction category</span> varies in both dimensions and gets
+a proper rectangle.<br><br>
+
+<strong>Connecting to labor supply.</strong> The slope of each segment is the relevant marginal
+incentive: in phase-in it's w&middot;(1 + pi_in &times; s_eff), where s_eff is the effective state
+EITC rate (the statutory rate if refundable, ~0 if non-refundable for MW workers who owe little
+state tax); in the plateau it's w; in phase-out it's w&middot;(1 &minus; pi_out &times; s_eff).
+Higher state MW rotates every segment counter-clockwise; higher state EITC steepens the phase-in
+and shallows the phase-out. The cross-state variation in these slopes &mdash; together with the
+variation in kink locations &mdash; is what the project's identification strategy targets.
+</div>
+
+<div class="ref-panel" data-tab="tax">
+<strong>What is and isn't subtracted.</strong> The y-axis is
+<em>gross earnings + federal EITC + state EITC top-up</em>. <strong>Federal income tax,
+state income tax, and FICA (the 7.65% payroll tax) are NOT subtracted.</strong> The schedule
+shown is the pre-tax labor-supply incentive — earnings plus credits — not after-tax disposable
+income.<br><br>
+
+<strong>Why this framing.</strong> The visualization's purpose is to expose cross-state
+variation in MW and EITC policy. Federal income tax and FICA apply uniformly across all
+states (no cross-state variation), so subtracting them would shift every line down by the
+same amount without changing the shape of the envelope or the relative position of state
+lines. State income tax does vary, but for a married couple with 2 children earning near
+the federal MW, federal liability is typically zero after the standard deduction, dependent
+care credit, and CTC offsets, and state liability is similarly small or zero in most states.<br><br>
+
+<strong>Practical implications for the figure.</strong><br>
+&middot; The <em>levels</em> shown on the y-axis are slightly higher than what households
+actually take home &mdash; about 7.65% higher across the board from FICA alone.<br>
+&middot; The <em>cross-state ranking</em> of lines and the <em>shape of the envelope</em> are
+unchanged by including taxes, since the omitted components don't vary by state for this
+household type.<br>
+&middot; For <em>net-of-tax</em> labor supply work, one would want to subtract federal income tax,
+FICA, and state income tax. The other visualization in this project (single-household
+optimization with &alpha; slider) does subtract federal income tax and FICA; that one is the
+right tool for studying optimal hours. This figure is the right tool for showing policy variation.<br><br>
+
+<strong>What about the Child Tax Credit?</strong> Not included. CTC is federal and uniform across
+states (no cross-state variation), and is partially refundable. If included, it would lift every
+line by up to $4,000/child (2024) but wouldn't change the cross-state pattern.<br><br>
+
+<strong>What about state EITC interaction with state tax?</strong> For non-refundable state
+EITCs, the credit is capped at the household's state income tax liability. For MW-level workers
+with 2 children, state tax liability is usually near zero, which is why the
+<em>Non-refundable handling</em> toggle defaults to &ldquo;As cash&rdquo; (statutory rate) but offers
+&ldquo;Zero out&rdquo; (effective rate at low income). See the Refundability tab.
+</div>
+
+
+<div class="ref-panel" data-tab="data">
+<strong>Federal EITC parameters:</strong> Tax Policy Center, <em>Earned Income Tax Credit Parameters,
+1975&ndash;2026</em> (2-children tier, MFJ phase-out range). MFJ phase-out beginning equals the
+single phase-out beginning before EGTRRA 2001; the $1k MFJ premium phases in 2002&ndash;2004, becomes
+$2k in 2005&ndash;2007 (EGTRRA permanent), $3k in 2008, $5k in 2009&ndash;2010 (ARRA), and is made
+permanent and indexed from 2013 onward (ATRA).<br><br>
+
+<strong>State minimum wages:</strong> For 1991&ndash;2022, <code>mw_state_annual.dta</code> (annual
+mean of monthly state-effective MWs, so mid-year federal step-ups in 2007/08/09 are reflected).
+For 2023, UKCPR Jan-1 snapshot. For 2024&ndash;2025, US DOL Consolidated Minimum Wage Table /
+Wikipedia consolidated, Jan-1 values. State MW = max(state-statutory, federal). The federal
+reference uses the federal annual mean for years with mid-year changes; $7.25 throughout
+2010&ndash;2025.<br><br>
+
+<strong>State EITCs (1991&ndash;2023):</strong> UKY / UKCPR <em>National Welfare Data</em>
+(July 2025 update), &ldquo;State EITC Rate&rdquo; column. For Wisconsin, the 2-dependent rate
+(11% throughout the sample) is used in place of the headline rate (4%, applies to 1-child households).
+The &ldquo;Refundable State EITC&rdquo; indicator is preserved and the toggle uses it.<br><br>
+
+<strong>State EITCs (2024&ndash;2025):</strong> ITEP, <em>State Earned Income Tax Credits Support
+Families and Workers in 2024/2025</em> &mdash; specifically the 2025 Appendix
+&ldquo;State Earned Income Tax Credits in 2025&rdquo; with adjustments for known 2024&ne;2025
+differences (DC 70%&rarr;85%, MT 10%&rarr;20%, VA 15% partial&rarr;20% refundable). California,
+Minnesota, and Washington use their own credit calculations rather than a simple percentage match;
+for visualization consistency with the UKCPR encoding (which treats state EITC as state_rate &times;
+federal EITC), CA is shown at a representative 45% match, MN at 33%, and WA's flat-amount WFTC is
+encoded as 0 (since it doesn't multiply federal EITC). These approximations affect those three states
+specifically; the rest match ITEP's appendix exactly.<br><br>
+
+<strong>Coverage:</strong> 1991&ndash;2025, all 50 states + DC. Year intersection of all sources.
+</div>
+
+<div class="ref-panel" data-tab="refnd">
+A state EITC is <em>refundable</em> if households receive the full credit as cash even when it
+exceeds their state income tax liability. About two-thirds of state EITCs are refundable in any
+given recent year; the non-refundable ones are <strong>limited to offsetting state income tax</strong>.<br><br>
+
+For a married couple with 2 children earning at or near the federal MW, state income tax
+liability is typically zero or very small (the household sits below state-level filing thresholds
+or has its liability fully offset by state child-related deductions). In that case a non-refundable
+state EITC provides &ldquo;effectively zero&rdquo; cash to the worker on the relevant range of the
+budget constraint. The <strong>&ldquo;Zero out&rdquo;</strong> setting reflects this: state lines for
+non-refundable states collapse onto the &ldquo;MW only&rdquo; envelope.<br><br>
+
+In contrast, <strong>&ldquo;Treat as cash&rdquo;</strong> applies the statutory rate uniformly. This
+overstates the actual transfer for non-refundable states but is the right object if the question is
+&ldquo;what is the statutory marginal incentive&rdquo; — e.g., for awareness or composition checks.<br><br>
+
+For empirical work on labor supply this distinction matters: <strong>refundable state EITCs are what
+the Bastian-Jones (2021) and Schanzenbach-Strain (2021) literatures effectively identify off of</strong>;
+non-refundable rates are mostly noise on the low-income margin.
+</div>
+
+<div class="ref-panel" data-tab="src">
+<strong>EITC parameters:</strong> <a href="https://taxpolicycenter.org/sites/default/files/2025-04/eitc_parameters.pdf" target="_blank">TPC EITC Parameters 1975&ndash;2026</a><br><br>
+<strong>State minimum wages (historical, 1991&ndash;2022):</strong> <code>mw_state_annual.dta</code> (annual mean) &middot;
+<a href="https://www.dol.gov/agencies/whd/state/minimum-wage/history" target="_blank">DOL state MW history</a>
+&middot; <a href="https://www.epi.org/minimum-wage-tracker/" target="_blank">EPI MW tracker</a><br><br>
+<strong>State minimum wages (2024&ndash;2025):</strong> <a href="https://www.dol.gov/agencies/whd/mw-consolidated" target="_blank">DOL Consolidated Minimum Wage Table</a>
+&middot; <a href="https://en.wikipedia.org/wiki/List_of_U.S._states_by_minimum_wage" target="_blank">Wikipedia state MW table</a> (Jan-1 values)<br><br>
+<strong>State EITCs (1991&ndash;2023):</strong> <a href="https://ukcpr.org/resources/national-welfare-data" target="_blank">UKCPR National Welfare Data</a>, July 2025 update<br><br>
+<strong>State EITCs (2024&ndash;2025):</strong> ITEP, <a href="https://itep.org/state-earned-income-tax-credits-2024/" target="_blank">State Earned Income Tax Credits Support Families and Workers in 2024</a>
+&middot; <a href="https://itep.sfo2.digitaloceanspaces.com/APPENDIX-State-Earned-Income-Tax-Credits-in-2025-1.pdf" target="_blank">ITEP 2025 State EITC Appendix</a>
+&middot; <a href="https://itep.org/state-earned-income-tax-credits-support-families-and-workers-in-2025/" target="_blank">ITEP 2025 update</a><br><br>
+<strong>Refundability and design:</strong> CBPP, <a href="https://www.cbpp.org/research/family-income-support/policy-basics-state-earned-income-tax-credits" target="_blank">State EITC Policy Basics</a> &middot;
+<a href="https://taxpolicycenter.org/briefing-book/how-do-state-earned-income-tax-credits-work" target="_blank">TPC: How do state EITCs work?</a>
+</div>
+
+</div></div>
+
+</div>
+
+<script>
+const DATA = {"years":[1991,1992,1993,1994,1995,1996,1997,1998,1999,2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025],"fedE":{"1991":{"pi":0.173,"pb":7140.0,"mc":1235.0,"po":0.1236,"ob":11250.0,"oe":21250.0},"1992":{"pi":0.184,"pb":7520.0,"mc":1384.0,"po":0.1314,"ob":11840.0,"oe":22370.0},"1993":{"pi":0.195,"pb":7750.0,"mc":1511.0,"po":0.1393,"ob":12200.0,"oe":23050.0},"1994":{"pi":0.3,"pb":8425.0,"mc":2528.0,"po":0.1768,"ob":11000.0,"oe":25296.0},"1995":{"pi":0.36,"pb":8640.0,"mc":3110.0,"po":0.2022,"ob":11290.0,"oe":26673.0},"1996":{"pi":0.4,"pb":8890.0,"mc":3556.0,"po":0.2106,"ob":11610.0,"oe":28495.0},"1997":{"pi":0.4,"pb":9140.0,"mc":3656.0,"po":0.2106,"ob":11930.0,"oe":29290.0},"1998":{"pi":0.4,"pb":9390.0,"mc":3756.0,"po":0.2106,"ob":12260.0,"oe":30095.0},"1999":{"pi":0.4,"pb":9540.0,"mc":3816.0,"po":0.2106,"ob":12460.0,"oe":30580.0},"2000":{"pi":0.4,"pb":9720.0,"mc":3888.0,"po":0.2106,"ob":12690.0,"oe":31152.0},"2001":{"pi":0.4,"pb":10020.0,"mc":4008.0,"po":0.2106,"ob":13090.0,"oe":32121.0},"2002":{"pi":0.4,"pb":10350.0,"mc":4140.0,"po":0.2106,"ob":14520.0,"oe":34178.0},"2003":{"pi":0.4,"pb":10510.0,"mc":4204.0,"po":0.2106,"ob":14730.0,"oe":34692.0},"2004":{"pi":0.4,"pb":10750.0,"mc":4300.0,"po":0.2106,"ob":15040.0,"oe":35458.0},"2005":{"pi":0.4,"pb":11000.0,"mc":4400.0,"po":0.2106,"ob":16370.0,"oe":37263.0},"2006":{"pi":0.4,"pb":11340.0,"mc":4536.0,"po":0.2106,"ob":16810.0,"oe":38348.0},"2007":{"pi":0.4,"pb":11790.0,"mc":4716.0,"po":0.2106,"ob":17390.0,"oe":39783.0},"2008":{"pi":0.4,"pb":12060.0,"mc":4824.0,"po":0.2106,"ob":18740.0,"oe":41646.0},"2009":{"pi":0.4,"pb":12570.0,"mc":5028.0,"po":0.2106,"ob":21420.0,"oe":45295.0},"2010":{"pi":0.4,"pb":12590.0,"mc":5036.0,"po":0.2106,"ob":21460.0,"oe":45373.0},"2011":{"pi":0.4,"pb":12780.0,"mc":5112.0,"po":0.210596,"ob":21770.0,"oe":46044.0},"2012":{"pi":0.4,"pb":13090.0,"mc":5236.0,"po":0.210596,"ob":22300.0,"oe":47162.0},"2013":{"pi":0.4,"pb":13430.0,"mc":5372.0,"po":0.210596,"ob":22870.0,"oe":48378.0},"2014":{"pi":0.4,"pb":13650.0,"mc":5460.0,"po":0.210599,"ob":23260.0,"oe":49186.0},"2015":{"pi":0.4,"pb":13870.0,"mc":5548.0,"po":0.210599,"ob":23630.0,"oe":49974.0},"2016":{"pi":0.4,"pb":13930.0,"mc":5572.0,"po":0.210599,"ob":23740.0,"oe":50198.0},"2017":{"pi":0.4,"pb":14040.0,"mc":5616.0,"po":0.210599,"ob":23930.0,"oe":50597.0},"2018":{"pi":0.4,"pb":14290.0,"mc":5716.0,"po":0.210599,"ob":24350.0,"oe":51492.0},"2019":{"pi":0.4,"pb":14570.0,"mc":5828.0,"po":0.210599,"ob":24820.0,"oe":52493.0},"2020":{"pi":0.4,"pb":14800.0,"mc":5920.0,"po":0.210599,"ob":25220.0,"oe":53330.0},"2021":{"pi":0.4,"pb":14950.0,"mc":5980.0,"po":0.210599,"ob":25470.0,"oe":53865.0},"2022":{"pi":0.4,"pb":15410.0,"mc":6164.0,"po":0.210599,"ob":26260.0,"oe":55529.0},"2023":{"pi":0.4,"pb":16510.0,"mc":6604.0,"po":0.210599,"ob":28120.0,"oe":59478.0},"2024":{"pi":0.4,"pb":17400.0,"mc":6960.0,"po":0.210599,"ob":29640.0,"oe":62688.0},"2025":{"pi":0.4,"pb":17880.0,"mc":7152.0,"po":0.210599,"ob":30470.0,"oe":64430.0}},"fedM":{"1991":4.139,"1992":4.25,"1993":4.25,"1994":4.25,"1995":4.25,"1996":4.376,"1997":4.884,"1998":5.15,"1999":5.15,"2000":5.15,"2001":5.15,"2002":5.15,"2003":5.15,"2004":5.15,"2005":5.15,"2006":5.15,"2007":5.459,"2008":6.158,"2009":6.859,"2010":7.25,"2011":7.25,"2012":7.25,"2013":7.25,"2014":7.25,"2015":7.25,"2016":7.25,"2017":7.25,"2018":7.25,"2019":7.25,"2020":7.25,"2021":7.25,"2022":7.25,"2023":7.25,"2024":7.25,"2025":7.25},"st":{"1991":[{"s":"AK","f":2,"w":4.639,"e":0.0,"r":0},{"s":"AL","f":1,"w":4.139,"e":0.0,"r":0},{"s":"AR","f":5,"w":4.139,"e":0.0,"r":0},{"s":"AZ","f":4,"w":4.139,"e":0.0,"r":0},{"s":"CA","f":6,"w":4.25,"e":0.0,"r":0},{"s":"CO","f":8,"w":4.139,"e":0.0,"r":0},{"s":"CT","f":9,"w":4.265,"e":0.0,"r":0},{"s":"DC","f":11,"w":4.85,"e":0.0,"r":0},{"s":"DE","f":10,"w":4.139,"e":0.0,"r":0},{"s":"FL","f":12,"w":4.139,"e":0.0,"r":0},{"s":"GA","f":13,"w":4.139,"e":0.0,"r":0},{"s":"HI","f":15,"w":4.151,"e":0.0,"r":0},{"s":"IA","f":19,"w":4.25,"e":0.065,"r":0},{"s":"ID","f":16,"w":4.139,"e":0.0,"r":0},{"s":"IL","f":17,"w":4.139,"e":0.0,"r":0},{"s":"IN","f":18,"w":4.139,"e":0.0,"r":0},{"s":"KS","f":20,"w":4.139,"e":0.0,"r":0},{"s":"KY","f":21,"w":4.139,"e":0.0,"r":0},{"s":"LA","f":22,"w":4.139,"e":0.0,"r":0},{"s":"MA","f":25,"w":4.139,"e":0.0,"r":0},{"s":"MD","f":24,"w":4.139,"e":0.5,"r":0},{"s":"ME","f":23,"w":4.151,"e":0.0,"r":0},{"s":"MI","f":26,"w":4.139,"e":0.0,"r":0},{"s":"MN","f":27,"w":4.25,"e":0.1,"r":1},{"s":"MO","f":29,"w":4.139,"e":0.0,"r":0},{"s":"MS","f":28,"w":4.139,"e":0.0,"r":0},{"s":"MT","f":30,"w":4.139,"e":0.0,"r":0},{"s":"NC","f":37,"w":4.139,"e":0.0,"r":0},{"s":"ND","f":38,"w":4.139,"e":0.0,"r":0},{"s":"NE","f":31,"w":4.139,"e":0.0,"r":0},{"s":"NH","f":33,"w":4.151,"e":0.0,"r":0},{"s":"NJ","f":34,"w":4.139,"e":0.0,"r":0},{"s":"NM","f":35,"w":4.139,"e":0.0,"r":0},{"s":"NV","f":32,"w":4.139,"e":0.0,"r":0},{"s":"NY","f":36,"w":4.139,"e":0.0,"r":0},{"s":"OH","f":39,"w":4.139,"e":0.0,"r":0},{"s":"OK","f":40,"w":4.139,"e":0.0,"r":0},{"s":"OR","f":41,"w":4.75,"e":0.0,"r":0},{"s":"PA","f":42,"w":4.139,"e":0.0,"r":0},{"s":"RI","f":44,"w":4.401,"e":0.275,"r":0},{"s":"SC","f":45,"w":4.139,"e":0.0,"r":0},{"s":"SD","f":46,"w":4.139,"e":0.0,"r":0},{"s":"TN","f":47,"w":4.139,"e":0.0,"r":0},{"s":"TX","f":48,"w":4.139,"e":0.0,"r":0},{"s":"UT","f":49,"w":4.139,"e":0.0,"r":0},{"s":"VA","f":51,"w":4.139,"e":0.0,"r":0},{"s":"VT","f":50,"w":4.151,"e":0.28,"r":1},{"s":"WA","f":53,"w":4.25,"e":0.0,"r":0},{"s":"WI","f":55,"w":4.139,"e":0.25,"r":1},{"s":"WV","f":54,"w":4.139,"e":0.0,"r":0},{"s":"WY","f":56,"w":4.139,"e":0.0,"r":0}],"1992":[{"s":"AK","f":2,"w":4.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":4.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":4.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":4.25,"e":0.0,"r":0},{"s":"CA","f":6,"w":4.25,"e":0.0,"r":0},{"s":"CO","f":8,"w":4.25,"e":0.0,"r":0},{"s":"CT","f":9,"w":4.27,"e":0.0,"r":0},{"s":"DC","f":11,"w":4.85,"e":0.0,"r":0},{"s":"DE","f":10,"w":4.25,"e":0.0,"r":0},{"s":"FL","f":12,"w":4.25,"e":0.0,"r":0},{"s":"GA","f":13,"w":4.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":4.626,"e":0.0,"r":0},{"s":"IA","f":19,"w":4.65,"e":0.065,"r":0},{"s":"ID","f":16,"w":4.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":4.25,"e":0.0,"r":0},{"s":"IN","f":18,"w":4.25,"e":0.0,"r":0},{"s":"KS","f":20,"w":4.25,"e":0.0,"r":0},{"s":"KY","f":21,"w":4.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":4.25,"e":0.0,"r":0},{"s":"MA","f":25,"w":4.25,"e":0.0,"r":0},{"s":"MD","f":24,"w":4.25,"e":0.5,"r":0},{"s":"ME","f":23,"w":4.25,"e":0.0,"r":0},{"s":"MI","f":26,"w":4.25,"e":0.0,"r":0},{"s":"MN","f":27,"w":4.25,"e":0.1,"r":1},{"s":"MO","f":29,"w":4.25,"e":0.0,"r":0},{"s":"MS","f":28,"w":4.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":4.25,"e":0.0,"r":0},{"s":"NC","f":37,"w":4.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":4.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":4.25,"e":0.0,"r":0},{"s":"NH","f":33,"w":4.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":4.851,"e":0.0,"r":0},{"s":"NM","f":35,"w":4.25,"e":0.0,"r":0},{"s":"NV","f":32,"w":4.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":4.25,"e":0.0,"r":0},{"s":"OH","f":39,"w":4.25,"e":0.0,"r":0},{"s":"OK","f":40,"w":4.25,"e":0.0,"r":0},{"s":"OR","f":41,"w":4.75,"e":0.0,"r":0},{"s":"PA","f":42,"w":4.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":4.45,"e":0.275,"r":0},{"s":"SC","f":45,"w":4.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":4.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":4.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":4.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":4.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":4.25,"e":0.0,"r":0},{"s":"VT","f":50,"w":4.25,"e":0.28,"r":1},{"s":"WA","f":53,"w":4.25,"e":0.0,"r":0},{"s":"WI","f":55,"w":4.25,"e":0.25,"r":1},{"s":"WV","f":54,"w":4.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":4.25,"e":0.0,"r":0}],"1993":[{"s":"AK","f":2,"w":4.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":4.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":4.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":4.25,"e":0.0,"r":0},{"s":"CA","f":6,"w":4.25,"e":0.0,"r":0},{"s":"CO","f":8,"w":4.25,"e":0.0,"r":0},{"s":"CT","f":9,"w":4.27,"e":0.0,"r":0},{"s":"DC","f":11,"w":4.951,"e":0.0,"r":0},{"s":"DE","f":10,"w":4.25,"e":0.0,"r":0},{"s":"FL","f":12,"w":4.25,"e":0.0,"r":0},{"s":"GA","f":13,"w":4.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":4.65,"e":0.065,"r":0},{"s":"ID","f":16,"w":4.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":4.25,"e":0.0,"r":0},{"s":"IN","f":18,"w":4.25,"e":0.0,"r":0},{"s":"KS","f":20,"w":4.25,"e":0.0,"r":0},{"s":"KY","f":21,"w":4.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":4.25,"e":0.0,"r":0},{"s":"MA","f":25,"w":4.25,"e":0.0,"r":0},{"s":"MD","f":24,"w":4.25,"e":0.5,"r":0},{"s":"ME","f":23,"w":4.25,"e":0.0,"r":0},{"s":"MI","f":26,"w":4.25,"e":0.0,"r":0},{"s":"MN","f":27,"w":4.25,"e":0.15,"r":1},{"s":"MO","f":29,"w":4.25,"e":0.0,"r":0},{"s":"MS","f":28,"w":4.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":4.25,"e":0.0,"r":0},{"s":"NC","f":37,"w":4.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":4.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":4.25,"e":0.0,"r":0},{"s":"NH","f":33,"w":4.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.05,"e":0.0,"r":0},{"s":"NM","f":35,"w":4.25,"e":0.0,"r":0},{"s":"NV","f":32,"w":4.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":4.25,"e":0.0,"r":0},{"s":"OH","f":39,"w":4.25,"e":0.0,"r":0},{"s":"OK","f":40,"w":4.25,"e":0.0,"r":0},{"s":"OR","f":41,"w":4.75,"e":0.0,"r":0},{"s":"PA","f":42,"w":4.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":4.45,"e":0.275,"r":0},{"s":"SC","f":45,"w":4.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":4.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":4.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":4.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":4.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":4.25,"e":0.0,"r":0},{"s":"VT","f":50,"w":4.25,"e":0.28,"r":1},{"s":"WA","f":53,"w":4.25,"e":0.0,"r":0},{"s":"WI","f":55,"w":4.25,"e":0.25,"r":1},{"s":"WV","f":54,"w":4.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":4.25,"e":0.0,"r":0}],"1994":[{"s":"AK","f":2,"w":4.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":4.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":4.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":4.25,"e":0.0,"r":0},{"s":"CA","f":6,"w":4.25,"e":0.0,"r":0},{"s":"CO","f":8,"w":4.25,"e":0.0,"r":0},{"s":"CT","f":9,"w":4.27,"e":0.0,"r":0},{"s":"DC","f":11,"w":5.25,"e":0.0,"r":0},{"s":"DE","f":10,"w":4.25,"e":0.0,"r":0},{"s":"FL","f":12,"w":4.25,"e":0.0,"r":0},{"s":"GA","f":13,"w":4.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":4.65,"e":0.065,"r":0},{"s":"ID","f":16,"w":4.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":4.25,"e":0.0,"r":0},{"s":"IN","f":18,"w":4.25,"e":0.0,"r":0},{"s":"KS","f":20,"w":4.25,"e":0.0,"r":0},{"s":"KY","f":21,"w":4.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":4.25,"e":0.0,"r":0},{"s":"MA","f":25,"w":4.25,"e":0.0,"r":0},{"s":"MD","f":24,"w":4.25,"e":0.5,"r":0},{"s":"ME","f":23,"w":4.25,"e":0.0,"r":0},{"s":"MI","f":26,"w":4.25,"e":0.0,"r":0},{"s":"MN","f":27,"w":4.25,"e":0.15,"r":1},{"s":"MO","f":29,"w":4.25,"e":0.0,"r":0},{"s":"MS","f":28,"w":4.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":4.25,"e":0.0,"r":0},{"s":"NC","f":37,"w":4.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":4.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":4.25,"e":0.0,"r":0},{"s":"NH","f":33,"w":4.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.05,"e":0.0,"r":0},{"s":"NM","f":35,"w":4.25,"e":0.0,"r":0},{"s":"NV","f":32,"w":4.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":4.25,"e":0.075,"r":1},{"s":"OH","f":39,"w":4.25,"e":0.0,"r":0},{"s":"OK","f":40,"w":4.25,"e":0.0,"r":0},{"s":"OR","f":41,"w":4.75,"e":0.0,"r":0},{"s":"PA","f":42,"w":4.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":4.45,"e":0.275,"r":0},{"s":"SC","f":45,"w":4.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":4.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":4.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":4.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":4.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":4.25,"e":0.0,"r":0},{"s":"VT","f":50,"w":4.25,"e":0.25,"r":1},{"s":"WA","f":53,"w":4.9,"e":0.0,"r":0},{"s":"WI","f":55,"w":4.25,"e":0.16,"r":1},{"s":"WV","f":54,"w":4.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":4.25,"e":0.0,"r":0}],"1995":[{"s":"AK","f":2,"w":4.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":4.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":4.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":4.25,"e":0.0,"r":0},{"s":"CA","f":6,"w":4.25,"e":0.0,"r":0},{"s":"CO","f":8,"w":4.25,"e":0.0,"r":0},{"s":"CT","f":9,"w":4.27,"e":0.0,"r":0},{"s":"DC","f":11,"w":5.25,"e":0.0,"r":0},{"s":"DE","f":10,"w":4.25,"e":0.0,"r":0},{"s":"FL","f":12,"w":4.25,"e":0.0,"r":0},{"s":"GA","f":13,"w":4.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":4.65,"e":0.065,"r":0},{"s":"ID","f":16,"w":4.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":4.25,"e":0.0,"r":0},{"s":"IN","f":18,"w":4.25,"e":0.0,"r":0},{"s":"KS","f":20,"w":4.25,"e":0.0,"r":0},{"s":"KY","f":21,"w":4.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":4.25,"e":0.0,"r":0},{"s":"MA","f":25,"w":4.25,"e":0.0,"r":0},{"s":"MD","f":24,"w":4.25,"e":0.5,"r":0},{"s":"ME","f":23,"w":4.25,"e":0.0,"r":0},{"s":"MI","f":26,"w":4.25,"e":0.0,"r":0},{"s":"MN","f":27,"w":4.25,"e":0.15,"r":1},{"s":"MO","f":29,"w":4.25,"e":0.0,"r":0},{"s":"MS","f":28,"w":4.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":4.25,"e":0.0,"r":0},{"s":"NC","f":37,"w":4.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":4.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":4.25,"e":0.0,"r":0},{"s":"NH","f":33,"w":4.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.05,"e":0.0,"r":0},{"s":"NM","f":35,"w":4.25,"e":0.0,"r":0},{"s":"NV","f":32,"w":4.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":4.25,"e":0.1,"r":1},{"s":"OH","f":39,"w":4.25,"e":0.0,"r":0},{"s":"OK","f":40,"w":4.25,"e":0.0,"r":0},{"s":"OR","f":41,"w":4.75,"e":0.0,"r":0},{"s":"PA","f":42,"w":4.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":4.45,"e":0.275,"r":0},{"s":"SC","f":45,"w":4.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":4.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":4.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":4.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":4.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":4.25,"e":0.0,"r":0},{"s":"VT","f":50,"w":4.499,"e":0.25,"r":1},{"s":"WA","f":53,"w":4.9,"e":0.0,"r":0},{"s":"WI","f":55,"w":4.25,"e":0.16,"r":1},{"s":"WV","f":54,"w":4.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":4.25,"e":0.0,"r":0}],"1996":[{"s":"AK","f":2,"w":4.876,"e":0.0,"r":0},{"s":"AL","f":1,"w":4.376,"e":0.0,"r":0},{"s":"AR","f":5,"w":4.376,"e":0.0,"r":0},{"s":"AZ","f":4,"w":4.376,"e":0.0,"r":0},{"s":"CA","f":6,"w":4.376,"e":0.0,"r":0},{"s":"CO","f":8,"w":4.376,"e":0.0,"r":0},{"s":"CT","f":9,"w":4.396,"e":0.0,"r":0},{"s":"DC","f":11,"w":5.376,"e":0.0,"r":0},{"s":"DE","f":10,"w":4.56,"e":0.0,"r":0},{"s":"FL","f":12,"w":4.376,"e":0.0,"r":0},{"s":"GA","f":13,"w":4.376,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":4.675,"e":0.065,"r":0},{"s":"ID","f":16,"w":4.376,"e":0.0,"r":0},{"s":"IL","f":17,"w":4.376,"e":0.0,"r":0},{"s":"IN","f":18,"w":4.376,"e":0.0,"r":0},{"s":"KS","f":20,"w":4.376,"e":0.0,"r":0},{"s":"KY","f":21,"w":4.376,"e":0.0,"r":0},{"s":"LA","f":22,"w":4.376,"e":0.0,"r":0},{"s":"MA","f":25,"w":4.75,"e":0.0,"r":0},{"s":"MD","f":24,"w":4.376,"e":0.5,"r":0},{"s":"ME","f":23,"w":4.376,"e":0.0,"r":0},{"s":"MI","f":26,"w":4.376,"e":0.0,"r":0},{"s":"MN","f":27,"w":4.376,"e":0.15,"r":1},{"s":"MO","f":29,"w":4.376,"e":0.0,"r":0},{"s":"MS","f":28,"w":4.376,"e":0.0,"r":0},{"s":"MT","f":30,"w":4.376,"e":0.0,"r":0},{"s":"NC","f":37,"w":4.376,"e":0.0,"r":0},{"s":"ND","f":38,"w":4.376,"e":0.0,"r":0},{"s":"NE","f":31,"w":4.376,"e":0.0,"r":0},{"s":"NH","f":33,"w":4.376,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.05,"e":0.0,"r":0},{"s":"NM","f":35,"w":4.376,"e":0.0,"r":0},{"s":"NV","f":32,"w":4.376,"e":0.0,"r":0},{"s":"NY","f":36,"w":4.376,"e":0.2,"r":1},{"s":"OH","f":39,"w":4.376,"e":0.0,"r":0},{"s":"OK","f":40,"w":4.376,"e":0.0,"r":0},{"s":"OR","f":41,"w":4.75,"e":0.0,"r":0},{"s":"PA","f":42,"w":4.376,"e":0.0,"r":0},{"s":"RI","f":44,"w":4.55,"e":0.275,"r":0},{"s":"SC","f":45,"w":4.376,"e":0.0,"r":0},{"s":"SD","f":46,"w":4.376,"e":0.0,"r":0},{"s":"TN","f":47,"w":4.376,"e":0.0,"r":0},{"s":"TX","f":48,"w":4.376,"e":0.0,"r":0},{"s":"UT","f":49,"w":4.376,"e":0.0,"r":0},{"s":"VA","f":51,"w":4.376,"e":0.0,"r":0},{"s":"VT","f":50,"w":4.749,"e":0.25,"r":1},{"s":"WA","f":53,"w":4.9,"e":0.0,"r":0},{"s":"WI","f":55,"w":4.376,"e":0.14,"r":1},{"s":"WV","f":54,"w":4.376,"e":0.0,"r":0},{"s":"WY","f":56,"w":4.376,"e":0.0,"r":0}],"1997":[{"s":"AK","f":2,"w":5.384,"e":0.0,"r":0},{"s":"AL","f":1,"w":4.884,"e":0.0,"r":0},{"s":"AR","f":5,"w":4.884,"e":0.0,"r":0},{"s":"AZ","f":4,"w":4.884,"e":0.0,"r":0},{"s":"CA","f":6,"w":5.01,"e":0.0,"r":0},{"s":"CO","f":8,"w":4.91,"e":0.0,"r":0},{"s":"CT","f":9,"w":4.907,"e":0.0,"r":0},{"s":"DC","f":11,"w":5.884,"e":0.0,"r":0},{"s":"DE","f":10,"w":5.05,"e":0.0,"r":0},{"s":"FL","f":12,"w":4.884,"e":0.0,"r":0},{"s":"GA","f":13,"w":4.884,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":4.884,"e":0.065,"r":0},{"s":"ID","f":16,"w":4.884,"e":0.0,"r":0},{"s":"IL","f":17,"w":4.884,"e":0.0,"r":0},{"s":"IN","f":18,"w":4.884,"e":0.0,"r":0},{"s":"KS","f":20,"w":4.884,"e":0.0,"r":0},{"s":"KY","f":21,"w":4.884,"e":0.0,"r":0},{"s":"LA","f":22,"w":4.884,"e":0.0,"r":0},{"s":"MA","f":25,"w":5.25,"e":0.1,"r":1},{"s":"MD","f":24,"w":4.884,"e":0.5,"r":0},{"s":"ME","f":23,"w":4.884,"e":0.0,"r":0},{"s":"MI","f":26,"w":4.884,"e":0.0,"r":0},{"s":"MN","f":27,"w":4.884,"e":0.15,"r":1},{"s":"MO","f":29,"w":4.884,"e":0.0,"r":0},{"s":"MS","f":28,"w":4.884,"e":0.0,"r":0},{"s":"MT","f":30,"w":4.884,"e":0.0,"r":0},{"s":"NC","f":37,"w":4.884,"e":0.0,"r":0},{"s":"ND","f":38,"w":4.884,"e":0.0,"r":0},{"s":"NE","f":31,"w":4.884,"e":0.0,"r":0},{"s":"NH","f":33,"w":4.884,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.083,"e":0.0,"r":0},{"s":"NM","f":35,"w":4.884,"e":0.0,"r":0},{"s":"NV","f":32,"w":4.884,"e":0.0,"r":0},{"s":"NY","f":36,"w":4.884,"e":0.2,"r":1},{"s":"OH","f":39,"w":4.884,"e":0.0,"r":0},{"s":"OK","f":40,"w":4.884,"e":0.0,"r":0},{"s":"OR","f":41,"w":5.5,"e":0.05,"r":0},{"s":"PA","f":42,"w":4.884,"e":0.0,"r":0},{"s":"RI","f":44,"w":5.15,"e":0.275,"r":0},{"s":"SC","f":45,"w":4.884,"e":0.0,"r":0},{"s":"SD","f":46,"w":4.884,"e":0.0,"r":0},{"s":"TN","f":47,"w":4.884,"e":0.0,"r":0},{"s":"TX","f":48,"w":4.884,"e":0.0,"r":0},{"s":"UT","f":49,"w":4.884,"e":0.0,"r":0},{"s":"VA","f":51,"w":4.884,"e":0.0,"r":0},{"s":"VT","f":50,"w":5.1,"e":0.25,"r":1},{"s":"WA","f":53,"w":4.984,"e":0.0,"r":0},{"s":"WI","f":55,"w":4.884,"e":0.14,"r":1},{"s":"WV","f":54,"w":4.884,"e":0.0,"r":0},{"s":"WY","f":56,"w":4.884,"e":0.0,"r":0}],"1998":[{"s":"AK","f":2,"w":5.65,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.15,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":5.653,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.0,"r":0},{"s":"CT","f":9,"w":5.18,"e":0.0,"r":0},{"s":"DC","f":11,"w":6.15,"e":0.0,"r":0},{"s":"DE","f":10,"w":5.15,"e":0.0,"r":0},{"s":"FL","f":12,"w":5.15,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":5.15,"e":0.0,"r":0},{"s":"IN","f":18,"w":5.15,"e":0.0,"r":0},{"s":"KS","f":20,"w":5.15,"e":0.1,"r":0},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":5.25,"e":0.1,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.1,"r":0},{"s":"ME","f":23,"w":5.15,"e":0.0,"r":0},{"s":"MI","f":26,"w":5.15,"e":0.0,"r":0},{"s":"MN","f":27,"w":5.15,"e":0.25,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.0,"r":0},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.15,"e":0.0,"r":0},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.15,"e":0.0,"r":0},{"s":"NY","f":36,"w":5.15,"e":0.2,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.0,"r":0},{"s":"OR","f":41,"w":6.0,"e":0.05,"r":0},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":5.15,"e":0.27,"r":0},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.0,"r":0},{"s":"VT","f":50,"w":5.25,"e":0.25,"r":1},{"s":"WA","f":53,"w":5.15,"e":0.0,"r":0},{"s":"WI","f":55,"w":5.15,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.15,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"1999":[{"s":"AK","f":2,"w":5.65,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.15,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":5.75,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.085,"r":1},{"s":"CT","f":9,"w":5.65,"e":0.0,"r":0},{"s":"DC","f":11,"w":6.15,"e":0.0,"r":0},{"s":"DE","f":10,"w":5.486,"e":0.0,"r":0},{"s":"FL","f":12,"w":5.15,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":5.15,"e":0.0,"r":0},{"s":"IN","f":18,"w":5.15,"e":0.0,"r":0},{"s":"KS","f":20,"w":5.15,"e":0.1,"r":0},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":5.25,"e":0.1,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.1,"r":0},{"s":"ME","f":23,"w":5.15,"e":0.0,"r":0},{"s":"MI","f":26,"w":5.15,"e":0.0,"r":0},{"s":"MN","f":27,"w":5.15,"e":0.25,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.0,"r":0},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.15,"e":0.0,"r":0},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.15,"e":0.0,"r":0},{"s":"NY","f":36,"w":5.15,"e":0.2,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.0,"r":0},{"s":"OR","f":41,"w":6.5,"e":0.05,"r":0},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":5.402,"e":0.265,"r":0},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.0,"r":0},{"s":"VT","f":50,"w":5.376,"e":0.25,"r":1},{"s":"WA","f":53,"w":5.7,"e":0.0,"r":0},{"s":"WI","f":55,"w":5.15,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.15,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2000":[{"s":"AK","f":2,"w":5.65,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.15,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":5.75,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.1,"r":1},{"s":"CT","f":9,"w":6.15,"e":0.0,"r":0},{"s":"DC","f":11,"w":6.15,"e":0.1,"r":1},{"s":"DE","f":10,"w":5.776,"e":0.0,"r":0},{"s":"FL","f":12,"w":5.15,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":5.15,"e":0.05,"r":0},{"s":"IN","f":18,"w":5.15,"e":0.0,"r":0},{"s":"KS","f":20,"w":5.15,"e":0.1,"r":0},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":6.0,"e":0.1,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.15,"r":0},{"s":"ME","f":23,"w":5.15,"e":0.05,"r":0},{"s":"MI","f":26,"w":5.15,"e":0.0,"r":0},{"s":"MN","f":27,"w":5.15,"e":0.33,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.0,"r":0},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.15,"e":0.1,"r":0},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.15,"e":0.0,"r":0},{"s":"NY","f":36,"w":5.15,"e":0.225,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.0,"r":0},{"s":"OR","f":41,"w":6.5,"e":0.05,"r":0},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":5.817,"e":0.26,"r":0},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.0,"r":0},{"s":"VT","f":50,"w":5.75,"e":0.32,"r":1},{"s":"WA","f":53,"w":6.5,"e":0.0,"r":0},{"s":"WI","f":55,"w":5.15,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.15,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2001":[{"s":"AK","f":2,"w":5.65,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.15,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":6.25,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.1,"r":1},{"s":"CT","f":9,"w":6.4,"e":0.0,"r":0},{"s":"DC","f":11,"w":6.15,"e":0.25,"r":1},{"s":"DE","f":10,"w":6.15,"e":0.0,"r":0},{"s":"FL","f":12,"w":5.15,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":5.15,"e":0.05,"r":0},{"s":"IN","f":18,"w":5.15,"e":0.0,"r":0},{"s":"KS","f":20,"w":5.15,"e":0.1,"r":0},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":6.75,"e":0.15,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.16,"r":0},{"s":"ME","f":23,"w":5.15,"e":0.05,"r":0},{"s":"MI","f":26,"w":5.15,"e":0.0,"r":0},{"s":"MN","f":27,"w":5.15,"e":0.33,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.0,"r":0},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.15,"e":0.15,"r":1},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.15,"e":0.0,"r":0},{"s":"NY","f":36,"w":5.15,"e":0.25,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.0,"r":0},{"s":"OR","f":41,"w":6.5,"e":0.05,"r":0},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":6.15,"e":0.255,"r":0},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.0,"r":0},{"s":"VT","f":50,"w":6.25,"e":0.32,"r":1},{"s":"WA","f":53,"w":6.72,"e":0.0,"r":0},{"s":"WI","f":55,"w":5.15,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.15,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2002":[{"s":"AK","f":2,"w":5.65,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.15,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":6.75,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.0,"r":0},{"s":"CT","f":9,"w":6.7,"e":0.0,"r":0},{"s":"DC","f":11,"w":6.15,"e":0.25,"r":1},{"s":"DE","f":10,"w":6.15,"e":0.0,"r":0},{"s":"FL","f":12,"w":5.15,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":5.75,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":5.15,"e":0.05,"r":0},{"s":"IN","f":18,"w":5.15,"e":0.0,"r":0},{"s":"KS","f":20,"w":5.15,"e":0.15,"r":0},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":6.75,"e":0.15,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.16,"r":0},{"s":"ME","f":23,"w":5.75,"e":0.05,"r":0},{"s":"MI","f":26,"w":5.15,"e":0.0,"r":0},{"s":"MN","f":27,"w":5.15,"e":0.33,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.0,"r":0},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.15,"e":0.175,"r":1},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.15,"e":0.0,"r":0},{"s":"NY","f":36,"w":5.15,"e":0.275,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.05,"r":1},{"s":"OR","f":41,"w":6.5,"e":0.05,"r":0},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":6.15,"e":0.25,"r":0},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.0,"r":0},{"s":"VT","f":50,"w":6.25,"e":0.32,"r":1},{"s":"WA","f":53,"w":6.9,"e":0.0,"r":0},{"s":"WI","f":55,"w":5.15,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.15,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2003":[{"s":"AK","f":2,"w":7.15,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.15,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":6.75,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.0,"r":0},{"s":"CT","f":9,"w":6.9,"e":0.0,"r":0},{"s":"DC","f":11,"w":6.15,"e":0.25,"r":1},{"s":"DE","f":10,"w":6.15,"e":0.0,"r":0},{"s":"FL","f":12,"w":5.15,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":6.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":5.15,"e":0.05,"r":0},{"s":"IN","f":18,"w":5.15,"e":0.06,"r":0},{"s":"KS","f":20,"w":5.15,"e":0.15,"r":0},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":6.75,"e":0.15,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.18,"r":0},{"s":"ME","f":23,"w":6.25,"e":0.0492,"r":0},{"s":"MI","f":26,"w":5.15,"e":0.0,"r":0},{"s":"MN","f":27,"w":5.15,"e":0.33,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.0,"r":0},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.15,"e":0.2,"r":1},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.15,"e":0.0,"r":0},{"s":"NY","f":36,"w":5.15,"e":0.3,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.05,"r":1},{"s":"OR","f":41,"w":6.9,"e":0.05,"r":0},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":6.15,"e":0.05,"r":1},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.0,"r":0},{"s":"VT","f":50,"w":6.25,"e":0.32,"r":1},{"s":"WA","f":53,"w":7.01,"e":0.0,"r":0},{"s":"WI","f":55,"w":5.15,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.15,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2004":[{"s":"AK","f":2,"w":7.15,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.15,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":6.75,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.0,"r":0},{"s":"CT","f":9,"w":7.1,"e":0.0,"r":0},{"s":"DC","f":11,"w":6.15,"e":0.25,"r":1},{"s":"DE","f":10,"w":6.15,"e":0.0,"r":0},{"s":"FL","f":12,"w":5.15,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":6.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":5.5,"e":0.05,"r":1},{"s":"IN","f":18,"w":5.15,"e":0.06,"r":1},{"s":"KS","f":20,"w":5.15,"e":0.15,"r":1},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":6.75,"e":0.15,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.2,"r":1},{"s":"ME","f":23,"w":6.275,"e":0.0492,"r":0},{"s":"MI","f":26,"w":5.15,"e":0.0,"r":0},{"s":"MN","f":27,"w":5.15,"e":0.33,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.0,"r":0},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.15,"e":0.2,"r":1},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.15,"e":0.0,"r":0},{"s":"NY","f":36,"w":5.15,"e":0.3,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.05,"r":1},{"s":"OR","f":41,"w":7.05,"e":0.05,"r":0},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":6.75,"e":0.05,"r":1},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.0,"r":0},{"s":"VT","f":50,"w":6.75,"e":0.32,"r":1},{"s":"WA","f":53,"w":7.16,"e":0.0,"r":0},{"s":"WI","f":55,"w":5.15,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.15,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2005":[{"s":"AK","f":2,"w":7.15,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.15,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":6.75,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.0,"r":0},{"s":"CT","f":9,"w":7.1,"e":0.0,"r":0},{"s":"DC","f":11,"w":6.6,"e":0.35,"r":1},{"s":"DE","f":10,"w":6.15,"e":0.0,"r":0},{"s":"FL","f":12,"w":5.818,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":6.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":6.5,"e":0.05,"r":1},{"s":"IN","f":18,"w":5.15,"e":0.06,"r":1},{"s":"KS","f":20,"w":5.15,"e":0.15,"r":1},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":6.75,"e":0.15,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.2,"r":1},{"s":"ME","f":23,"w":6.388,"e":0.05,"r":0},{"s":"MI","f":26,"w":5.15,"e":0.0,"r":0},{"s":"MN","f":27,"w":5.569,"e":0.33,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.0,"r":0},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":5.402,"e":0.2,"r":1},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.15,"e":0.0,"r":0},{"s":"NY","f":36,"w":6.0,"e":0.3,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.05,"r":1},{"s":"OR","f":41,"w":7.25,"e":0.05,"r":1},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":6.75,"e":0.1,"r":1},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.0,"r":0},{"s":"VT","f":50,"w":7.0,"e":0.32,"r":1},{"s":"WA","f":53,"w":7.35,"e":0.0,"r":0},{"s":"WI","f":55,"w":5.472,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.15,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2006":[{"s":"AK","f":2,"w":7.15,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.15,"e":0.0,"r":0},{"s":"AR","f":5,"w":5.427,"e":0.0,"r":0},{"s":"AZ","f":4,"w":5.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":6.75,"e":0.0,"r":0},{"s":"CO","f":8,"w":5.15,"e":0.0,"r":0},{"s":"CT","f":9,"w":7.4,"e":0.0,"r":0},{"s":"DC","f":11,"w":7.0,"e":0.35,"r":1},{"s":"DE","f":10,"w":6.15,"e":0.2,"r":0},{"s":"FL","f":12,"w":6.4,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":6.75,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.15,"e":0.065,"r":0},{"s":"ID","f":16,"w":5.15,"e":0.0,"r":0},{"s":"IL","f":17,"w":6.5,"e":0.05,"r":1},{"s":"IN","f":18,"w":5.15,"e":0.06,"r":1},{"s":"KS","f":20,"w":5.15,"e":0.15,"r":1},{"s":"KY","f":21,"w":5.15,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.15,"e":0.0,"r":0},{"s":"MA","f":25,"w":6.75,"e":0.15,"r":1},{"s":"MD","f":24,"w":5.15,"e":0.2,"r":1},{"s":"ME","f":23,"w":6.563,"e":0.05,"r":0},{"s":"MI","f":26,"w":5.604,"e":0.0,"r":0},{"s":"MN","f":27,"w":6.15,"e":0.33,"r":1},{"s":"MO","f":29,"w":5.15,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.15,"e":0.0,"r":0},{"s":"MT","f":30,"w":5.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":5.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.15,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.15,"e":0.08,"r":1},{"s":"NH","f":33,"w":5.15,"e":0.0,"r":0},{"s":"NJ","f":34,"w":6.402,"e":0.2,"r":1},{"s":"NM","f":35,"w":5.15,"e":0.0,"r":0},{"s":"NV","f":32,"w":5.243,"e":0.0,"r":0},{"s":"NY","f":36,"w":6.75,"e":0.3,"r":1},{"s":"OH","f":39,"w":5.15,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.15,"e":0.05,"r":1},{"s":"OR","f":41,"w":7.5,"e":0.05,"r":1},{"s":"PA","f":42,"w":5.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":7.043,"e":0.15,"r":1},{"s":"SC","f":45,"w":5.15,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.15,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.15,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.15,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.15,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.15,"e":0.2,"r":0},{"s":"VT","f":50,"w":7.25,"e":0.32,"r":1},{"s":"WA","f":53,"w":7.63,"e":0.0,"r":0},{"s":"WI","f":55,"w":6.169,"e":0.14,"r":1},{"s":"WV","f":54,"w":5.503,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2007":[{"s":"AK","f":2,"w":7.15,"e":0.0,"r":0},{"s":"AL","f":1,"w":5.459,"e":0.0,"r":0},{"s":"AR","f":5,"w":6.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":6.75,"e":0.0,"r":0},{"s":"CA","f":6,"w":7.5,"e":0.0,"r":0},{"s":"CO","f":8,"w":6.85,"e":0.0,"r":0},{"s":"CT","f":9,"w":7.65,"e":0.0,"r":0},{"s":"DC","f":11,"w":7.0,"e":0.35,"r":1},{"s":"DE","f":10,"w":6.65,"e":0.2,"r":0},{"s":"FL","f":12,"w":6.67,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.459,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":5.941,"e":0.07,"r":0},{"s":"ID","f":16,"w":5.459,"e":0.0,"r":0},{"s":"IL","f":17,"w":7.004,"e":0.05,"r":1},{"s":"IN","f":18,"w":5.459,"e":0.06,"r":1},{"s":"KS","f":20,"w":5.459,"e":0.17,"r":1},{"s":"KY","f":21,"w":5.512,"e":0.0,"r":0},{"s":"LA","f":22,"w":5.459,"e":0.0,"r":0},{"s":"MA","f":25,"w":7.5,"e":0.15,"r":1},{"s":"MD","f":24,"w":6.15,"e":0.2,"r":1},{"s":"ME","f":23,"w":6.813,"e":0.05,"r":0},{"s":"MI","f":26,"w":7.051,"e":0.0,"r":0},{"s":"MN","f":27,"w":6.15,"e":0.33,"r":1},{"s":"MO","f":29,"w":6.5,"e":0.0,"r":0},{"s":"MS","f":28,"w":5.459,"e":0.0,"r":0},{"s":"MT","f":30,"w":6.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":6.15,"e":0.0,"r":0},{"s":"ND","f":38,"w":5.459,"e":0.0,"r":0},{"s":"NE","f":31,"w":5.459,"e":0.1,"r":1},{"s":"NH","f":33,"w":5.676,"e":0.0,"r":0},{"s":"NJ","f":34,"w":7.15,"e":0.2,"r":1},{"s":"NM","f":35,"w":5.459,"e":0.08,"r":1},{"s":"NV","f":32,"w":6.241,"e":0.0,"r":0},{"s":"NY","f":36,"w":7.15,"e":0.3,"r":1},{"s":"OH","f":39,"w":6.85,"e":0.0,"r":0},{"s":"OK","f":40,"w":5.459,"e":0.05,"r":1},{"s":"OR","f":41,"w":7.8,"e":0.05,"r":1},{"s":"PA","f":42,"w":6.704,"e":0.0,"r":0},{"s":"RI","f":44,"w":7.4,"e":0.15,"r":0},{"s":"SC","f":45,"w":5.459,"e":0.0,"r":0},{"s":"SD","f":46,"w":5.459,"e":0.0,"r":0},{"s":"TN","f":47,"w":5.459,"e":0.0,"r":0},{"s":"TX","f":48,"w":5.459,"e":0.0,"r":0},{"s":"UT","f":49,"w":5.459,"e":0.0,"r":0},{"s":"VA","f":51,"w":5.459,"e":0.2,"r":0},{"s":"VT","f":50,"w":7.53,"e":0.32,"r":1},{"s":"WA","f":53,"w":7.93,"e":0.0,"r":0},{"s":"WI","f":55,"w":6.5,"e":0.14,"r":1},{"s":"WV","f":54,"w":6.203,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.459,"e":0.0,"r":0}],"2008":[{"s":"AK","f":2,"w":7.15,"e":0.0,"r":0},{"s":"AL","f":1,"w":6.158,"e":0.0,"r":0},{"s":"AR","f":5,"w":6.382,"e":0.0,"r":0},{"s":"AZ","f":4,"w":6.9,"e":0.0,"r":0},{"s":"CA","f":6,"w":8.0,"e":0.0,"r":0},{"s":"CO","f":8,"w":7.02,"e":0.0,"r":0},{"s":"CT","f":9,"w":7.65,"e":0.0,"r":0},{"s":"DC","f":11,"w":7.242,"e":0.4,"r":1},{"s":"DE","f":10,"w":7.15,"e":0.2,"r":0},{"s":"FL","f":12,"w":6.79,"e":0.0,"r":0},{"s":"GA","f":13,"w":6.158,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.07,"r":1},{"s":"ID","f":16,"w":6.158,"e":0.0,"r":0},{"s":"IL","f":17,"w":7.626,"e":0.05,"r":1},{"s":"IN","f":18,"w":6.158,"e":0.06,"r":1},{"s":"KS","f":20,"w":6.158,"e":0.17,"r":1},{"s":"KY","f":21,"w":6.202,"e":0.0,"r":0},{"s":"LA","f":22,"w":6.158,"e":0.035,"r":1},{"s":"MA","f":25,"w":8.0,"e":0.15,"r":1},{"s":"MD","f":24,"w":6.326,"e":0.25,"r":1},{"s":"ME","f":23,"w":7.063,"e":0.05,"r":0},{"s":"MI","f":26,"w":7.276,"e":0.1,"r":1},{"s":"MN","f":27,"w":6.326,"e":0.33,"r":1},{"s":"MO","f":29,"w":6.65,"e":0.0,"r":0},{"s":"MS","f":28,"w":6.158,"e":0.0,"r":0},{"s":"MT","f":30,"w":6.382,"e":0.0,"r":0},{"s":"NC","f":37,"w":6.326,"e":0.035,"r":1},{"s":"ND","f":38,"w":6.158,"e":0.0,"r":0},{"s":"NE","f":31,"w":6.158,"e":0.1,"r":1},{"s":"NH","f":33,"w":6.755,"e":0.0,"r":0},{"s":"NJ","f":34,"w":7.15,"e":0.225,"r":1},{"s":"NM","f":35,"w":6.522,"e":0.1,"r":1},{"s":"NV","f":32,"w":6.591,"e":0.0,"r":0},{"s":"NY","f":36,"w":7.15,"e":0.3,"r":1},{"s":"OH","f":39,"w":7.0,"e":0.0,"r":0},{"s":"OK","f":40,"w":6.158,"e":0.05,"r":1},{"s":"OR","f":41,"w":7.95,"e":0.06,"r":1},{"s":"PA","f":42,"w":7.15,"e":0.0,"r":0},{"s":"RI","f":44,"w":7.4,"e":0.15,"r":1},{"s":"SC","f":45,"w":6.158,"e":0.0,"r":0},{"s":"SD","f":46,"w":6.158,"e":0.0,"r":0},{"s":"TN","f":47,"w":6.158,"e":0.0,"r":0},{"s":"TX","f":48,"w":6.158,"e":0.0,"r":0},{"s":"UT","f":49,"w":6.158,"e":0.0,"r":0},{"s":"VA","f":51,"w":6.158,"e":0.2,"r":0},{"s":"VT","f":50,"w":7.68,"e":0.32,"r":1},{"s":"WA","f":53,"w":8.07,"e":0.0,"r":0},{"s":"WI","f":55,"w":6.522,"e":0.14,"r":1},{"s":"WV","f":54,"w":6.902,"e":0.0,"r":0},{"s":"WY","f":56,"w":6.158,"e":0.0,"r":0}],"2009":[{"s":"AK","f":2,"w":7.194,"e":0.0,"r":0},{"s":"AL","f":1,"w":6.859,"e":0.0,"r":0},{"s":"AR","f":5,"w":6.859,"e":0.0,"r":0},{"s":"AZ","f":4,"w":7.25,"e":0.0,"r":0},{"s":"CA","f":6,"w":8.0,"e":0.0,"r":0},{"s":"CO","f":8,"w":7.28,"e":0.0,"r":0},{"s":"CT","f":9,"w":8.0,"e":0.0,"r":0},{"s":"DC","f":11,"w":7.859,"e":0.4,"r":1},{"s":"DE","f":10,"w":7.194,"e":0.2,"r":0},{"s":"FL","f":12,"w":7.228,"e":0.0,"r":0},{"s":"GA","f":13,"w":6.859,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.07,"r":1},{"s":"ID","f":16,"w":6.859,"e":0.0,"r":0},{"s":"IL","f":17,"w":7.876,"e":0.05,"r":1},{"s":"IN","f":18,"w":6.859,"e":0.09,"r":1},{"s":"KS","f":20,"w":6.859,"e":0.17,"r":1},{"s":"KY","f":21,"w":6.903,"e":0.0,"r":0},{"s":"LA","f":22,"w":6.859,"e":0.035,"r":1},{"s":"MA","f":25,"w":8.0,"e":0.15,"r":1},{"s":"MD","f":24,"w":6.859,"e":0.25,"r":1},{"s":"ME","f":23,"w":7.313,"e":0.05,"r":1},{"s":"MI","f":26,"w":7.4,"e":0.2,"r":1},{"s":"MN","f":27,"w":6.859,"e":0.33,"r":1},{"s":"MO","f":29,"w":7.138,"e":0.0,"r":0},{"s":"MS","f":28,"w":6.859,"e":0.0,"r":0},{"s":"MT","f":30,"w":7.054,"e":0.0,"r":0},{"s":"NC","f":37,"w":6.859,"e":0.05,"r":1},{"s":"ND","f":38,"w":6.859,"e":0.0,"r":0},{"s":"NE","f":31,"w":6.859,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":7.194,"e":0.25,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":7.203,"e":0.0,"r":0},{"s":"NY","f":36,"w":7.194,"e":0.3,"r":1},{"s":"OH","f":39,"w":7.3,"e":0.0,"r":0},{"s":"OK","f":40,"w":6.859,"e":0.05,"r":1},{"s":"OR","f":41,"w":8.4,"e":0.06,"r":1},{"s":"PA","f":42,"w":7.194,"e":0.0,"r":0},{"s":"RI","f":44,"w":7.4,"e":0.15,"r":1},{"s":"SC","f":45,"w":6.859,"e":0.0,"r":0},{"s":"SD","f":46,"w":6.859,"e":0.0,"r":0},{"s":"TN","f":47,"w":6.859,"e":0.0,"r":0},{"s":"TX","f":48,"w":6.859,"e":0.0,"r":0},{"s":"UT","f":49,"w":6.859,"e":0.0,"r":0},{"s":"VA","f":51,"w":6.859,"e":0.2,"r":0},{"s":"VT","f":50,"w":8.06,"e":0.32,"r":1},{"s":"WA","f":53,"w":8.55,"e":0.0,"r":0},{"s":"WI","f":55,"w":6.859,"e":0.14,"r":1},{"s":"WV","f":54,"w":7.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":6.859,"e":0.0,"r":0}],"2010":[{"s":"AK","f":2,"w":7.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":7.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":7.25,"e":0.0,"r":0},{"s":"CA","f":6,"w":8.0,"e":0.0,"r":0},{"s":"CO","f":8,"w":7.25,"e":0.0,"r":0},{"s":"CT","f":9,"w":8.25,"e":0.0,"r":0},{"s":"DC","f":11,"w":8.25,"e":0.4,"r":1},{"s":"DE","f":10,"w":7.25,"e":0.2,"r":0},{"s":"FL","f":12,"w":7.25,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.07,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.126,"e":0.05,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.18,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":8.0,"e":0.15,"r":1},{"s":"MD","f":24,"w":7.25,"e":0.25,"r":1},{"s":"ME","f":23,"w":7.5,"e":0.05,"r":0},{"s":"MI","f":26,"w":7.4,"e":0.2,"r":1},{"s":"MN","f":27,"w":7.25,"e":0.33,"r":1},{"s":"MO","f":29,"w":7.25,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":7.25,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.05,"r":1},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":7.25,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":7.25,"e":0.2,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":7.903,"e":0.0,"r":0},{"s":"NY","f":36,"w":7.25,"e":0.3,"r":1},{"s":"OH","f":39,"w":7.3,"e":0.0,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":8.4,"e":0.06,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":7.4,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":7.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":8.06,"e":0.32,"r":1},{"s":"WA","f":53,"w":8.55,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.14,"r":1},{"s":"WV","f":54,"w":7.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2011":[{"s":"AK","f":2,"w":7.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":7.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":7.35,"e":0.0,"r":0},{"s":"CA","f":6,"w":8.0,"e":0.0,"r":0},{"s":"CO","f":8,"w":7.36,"e":0.0,"r":0},{"s":"CT","f":9,"w":8.25,"e":0.3,"r":1},{"s":"DC","f":11,"w":8.25,"e":0.4,"r":1},{"s":"DE","f":10,"w":7.25,"e":0.2,"r":0},{"s":"FL","f":12,"w":7.285,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.07,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.05,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.06,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.18,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":8.0,"e":0.15,"r":1},{"s":"MD","f":24,"w":7.25,"e":0.25,"r":1},{"s":"ME","f":23,"w":7.5,"e":0.05,"r":0},{"s":"MI","f":26,"w":7.4,"e":0.2,"r":1},{"s":"MN","f":27,"w":7.25,"e":0.33,"r":1},{"s":"MO","f":29,"w":7.25,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":7.35,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.05,"r":1},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":7.25,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":7.25,"e":0.2,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":7.25,"e":0.3,"r":1},{"s":"OH","f":39,"w":7.4,"e":0.0,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":8.5,"e":0.06,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":7.4,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":7.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":8.15,"e":0.32,"r":1},{"s":"WA","f":53,"w":8.67,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":7.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2012":[{"s":"AK","f":2,"w":7.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":7.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":7.65,"e":0.0,"r":0},{"s":"CA","f":6,"w":8.0,"e":0.0,"r":0},{"s":"CO","f":8,"w":7.64,"e":0.0,"r":0},{"s":"CT","f":9,"w":8.25,"e":0.3,"r":1},{"s":"DC","f":11,"w":8.25,"e":0.4,"r":1},{"s":"DE","f":10,"w":7.25,"e":0.2,"r":0},{"s":"FL","f":12,"w":7.67,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.07,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.05,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.06,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.18,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":8.0,"e":0.15,"r":1},{"s":"MD","f":24,"w":7.25,"e":0.25,"r":1},{"s":"ME","f":23,"w":7.5,"e":0.05,"r":0},{"s":"MI","f":26,"w":7.4,"e":0.06,"r":1},{"s":"MN","f":27,"w":7.25,"e":0.33,"r":1},{"s":"MO","f":29,"w":7.25,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":7.65,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.05,"r":1},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":7.25,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":7.25,"e":0.2,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":7.25,"e":0.3,"r":1},{"s":"OH","f":39,"w":7.7,"e":0.0,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":8.8,"e":0.06,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":7.4,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":7.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":8.46,"e":0.32,"r":1},{"s":"WA","f":53,"w":9.04,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":7.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2013":[{"s":"AK","f":2,"w":7.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":7.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":7.8,"e":0.0,"r":0},{"s":"CA","f":6,"w":8.0,"e":0.0,"r":0},{"s":"CO","f":8,"w":7.78,"e":0.0,"r":0},{"s":"CT","f":9,"w":8.25,"e":0.25,"r":1},{"s":"DC","f":11,"w":8.25,"e":0.4,"r":1},{"s":"DE","f":10,"w":7.25,"e":0.2,"r":0},{"s":"FL","f":12,"w":7.79,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.07,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.05,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.06,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.18,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":8.0,"e":0.15,"r":1},{"s":"MD","f":24,"w":7.25,"e":0.25,"r":1},{"s":"ME","f":23,"w":7.5,"e":0.05,"r":0},{"s":"MI","f":26,"w":7.4,"e":0.06,"r":1},{"s":"MN","f":27,"w":7.25,"e":0.33,"r":1},{"s":"MO","f":29,"w":7.35,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":7.8,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.045,"r":1},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":7.25,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":7.25,"e":0.2,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":7.252,"e":0.3,"r":1},{"s":"OH","f":39,"w":7.85,"e":0.0,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":8.95,"e":0.06,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":7.75,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":7.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":8.6,"e":0.32,"r":1},{"s":"WA","f":53,"w":9.19,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":7.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2014":[{"s":"AK","f":2,"w":7.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":7.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":7.9,"e":0.0,"r":0},{"s":"CA","f":6,"w":8.504,"e":0.0,"r":0},{"s":"CO","f":8,"w":8.0,"e":0.1,"r":1},{"s":"CT","f":9,"w":8.7,"e":0.275,"r":1},{"s":"DC","f":11,"w":8.88,"e":0.4,"r":1},{"s":"DE","f":10,"w":7.543,"e":0.2,"r":0},{"s":"FL","f":12,"w":7.93,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.14,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.1,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":8.0,"e":0.15,"r":1},{"s":"MD","f":24,"w":7.25,"e":0.25,"r":1},{"s":"ME","f":23,"w":7.5,"e":0.05,"r":0},{"s":"MI","f":26,"w":7.651,"e":0.06,"r":1},{"s":"MN","f":27,"w":7.564,"e":0.33,"r":1},{"s":"MO","f":29,"w":7.5,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":7.9,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":7.25,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":8.25,"e":0.2,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":8.002,"e":0.3,"r":1},{"s":"OH","f":39,"w":7.95,"e":0.05,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":9.1,"e":0.08,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":8.0,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":7.25,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":8.73,"e":0.32,"r":1},{"s":"WA","f":53,"w":9.32,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":7.25,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2015":[{"s":"AK","f":2,"w":8.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":7.5,"e":0.0,"r":0},{"s":"AZ","f":4,"w":8.05,"e":0.0,"r":0},{"s":"CA","f":6,"w":9.0,"e":0.0,"r":0},{"s":"CO","f":8,"w":8.23,"e":0.1,"r":1},{"s":"CT","f":9,"w":9.15,"e":0.275,"r":1},{"s":"DC","f":11,"w":10.004,"e":0.4,"r":1},{"s":"DE","f":10,"w":8.043,"e":0.2,"r":0},{"s":"FL","f":12,"w":8.05,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":7.75,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.14,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.1,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":9.0,"e":0.15,"r":1},{"s":"MD","f":24,"w":8.126,"e":0.25,"r":1},{"s":"ME","f":23,"w":7.5,"e":0.05,"r":0},{"s":"MI","f":26,"w":8.15,"e":0.06,"r":1},{"s":"MN","f":27,"w":8.419,"e":0.33,"r":1},{"s":"MO","f":29,"w":7.65,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":8.05,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":8.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":8.38,"e":0.3,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":8.751,"e":0.3,"r":1},{"s":"OH","f":39,"w":8.1,"e":0.05,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":9.25,"e":0.06,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":9.0,"e":0.1,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":8.5,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":9.15,"e":0.32,"r":1},{"s":"WA","f":53,"w":9.47,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.0,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2016":[{"s":"AK","f":2,"w":9.75,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":8.0,"e":0.0,"r":0},{"s":"AZ","f":4,"w":8.05,"e":0.0,"r":0},{"s":"CA","f":6,"w":10.0,"e":0.85,"r":1},{"s":"CO","f":8,"w":8.31,"e":0.1,"r":1},{"s":"CT","f":9,"w":9.6,"e":0.275,"r":1},{"s":"DC","f":11,"w":11.003,"e":0.4,"r":1},{"s":"DE","f":10,"w":8.25,"e":0.2,"r":0},{"s":"FL","f":12,"w":8.05,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":8.5,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.1,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":10.0,"e":0.23,"r":1},{"s":"MD","f":24,"w":8.501,"e":0.26,"r":1},{"s":"ME","f":23,"w":7.5,"e":0.05,"r":0},{"s":"MI","f":26,"w":8.5,"e":0.06,"r":1},{"s":"MN","f":27,"w":9.209,"e":0.33,"r":1},{"s":"MO","f":29,"w":7.65,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":8.05,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":9.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":8.38,"e":0.35,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":9.002,"e":0.3,"r":1},{"s":"OH","f":39,"w":8.1,"e":0.1,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":0},{"s":"OR","f":41,"w":9.501,"e":0.08,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":9.6,"e":0.125,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":8.55,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":9.6,"e":0.32,"r":1},{"s":"WA","f":53,"w":9.47,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2017":[{"s":"AK","f":2,"w":9.8,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":8.5,"e":0.0,"r":0},{"s":"AZ","f":4,"w":10.0,"e":0.0,"r":0},{"s":"CA","f":6,"w":10.5,"e":0.85,"r":1},{"s":"CO","f":8,"w":9.3,"e":0.1,"r":1},{"s":"CT","f":9,"w":10.1,"e":0.23,"r":1},{"s":"DC","f":11,"w":12.004,"e":0.4,"r":1},{"s":"DE","f":10,"w":8.25,"e":0.2,"r":0},{"s":"FL","f":12,"w":8.1,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":9.25,"e":0.0,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.1,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":11.0,"e":0.23,"r":1},{"s":"MD","f":24,"w":9.002,"e":0.27,"r":1},{"s":"ME","f":23,"w":9.0,"e":0.05,"r":1},{"s":"MI","f":26,"w":8.9,"e":0.06,"r":1},{"s":"MN","f":27,"w":9.5,"e":0.35,"r":1},{"s":"MO","f":29,"w":7.7,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":8.15,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":9.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":8.44,"e":0.35,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":9.702,"e":0.3,"r":1},{"s":"OH","f":39,"w":8.15,"e":0.1,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":0},{"s":"OR","f":41,"w":10.002,"e":0.08,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":9.6,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.0,"r":0},{"s":"SD","f":46,"w":8.65,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":10.0,"e":0.32,"r":1},{"s":"WA","f":53,"w":11.0,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2018":[{"s":"AK","f":2,"w":9.84,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":8.5,"e":0.0,"r":0},{"s":"AZ","f":4,"w":10.5,"e":0.0,"r":0},{"s":"CA","f":6,"w":11.0,"e":0.85,"r":1},{"s":"CO","f":8,"w":10.2,"e":0.1,"r":1},{"s":"CT","f":9,"w":10.1,"e":0.23,"r":1},{"s":"DC","f":11,"w":12.878,"e":0.4,"r":1},{"s":"DE","f":10,"w":8.25,"e":0.2,"r":0},{"s":"FL","f":12,"w":8.25,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":10.1,"e":0.2,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.18,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.035,"r":1},{"s":"MA","f":25,"w":11.0,"e":0.23,"r":1},{"s":"MD","f":24,"w":9.678,"e":0.28,"r":1},{"s":"ME","f":23,"w":10.0,"e":0.05,"r":1},{"s":"MI","f":26,"w":9.25,"e":0.06,"r":1},{"s":"MN","f":27,"w":9.65,"e":0.35,"r":1},{"s":"MO","f":29,"w":7.85,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":8.3,"e":0.0,"r":0},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":9.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":8.6,"e":0.37,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.1,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":10.402,"e":0.3,"r":1},{"s":"OH","f":39,"w":8.3,"e":0.1,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":0},{"s":"OR","f":41,"w":10.502,"e":0.08,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":10.1,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.208,"r":0},{"s":"SD","f":46,"w":8.85,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":10.5,"e":0.36,"r":1},{"s":"WA","f":53,"w":11.5,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2019":[{"s":"AK","f":2,"w":9.89,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":9.25,"e":0.0,"r":0},{"s":"AZ","f":4,"w":11.0,"e":0.0,"r":0},{"s":"CA","f":6,"w":12.0,"e":0.85,"r":1},{"s":"CO","f":8,"w":11.1,"e":0.1,"r":1},{"s":"CT","f":9,"w":10.327,"e":0.23,"r":1},{"s":"DC","f":11,"w":13.628,"e":0.4,"r":1},{"s":"DE","f":10,"w":8.876,"e":0.2,"r":0},{"s":"FL","f":12,"w":8.46,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":10.1,"e":0.2,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":8.25,"e":0.18,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.05,"r":1},{"s":"MA","f":25,"w":12.0,"e":0.3,"r":1},{"s":"MD","f":24,"w":10.1,"e":0.28,"r":1},{"s":"ME","f":23,"w":11.0,"e":0.12,"r":1},{"s":"MI","f":26,"w":9.401,"e":0.06,"r":1},{"s":"MN","f":27,"w":9.86,"e":0.35,"r":1},{"s":"MO","f":29,"w":8.6,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":8.5,"e":0.03,"r":1},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":9.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":9.43,"e":0.39,"r":1},{"s":"NM","f":35,"w":7.5,"e":0.17,"r":1},{"s":"NV","f":32,"w":8.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":11.102,"e":0.3,"r":1},{"s":"OH","f":39,"w":8.55,"e":0.3,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":0},{"s":"OR","f":41,"w":11.002,"e":0.08,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":10.5,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.4167,"r":0},{"s":"SD","f":46,"w":9.1,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":10.78,"e":0.36,"r":1},{"s":"WA","f":53,"w":12.0,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2020":[{"s":"AK","f":2,"w":10.19,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":10.0,"e":0.0,"r":0},{"s":"AZ","f":4,"w":12.0,"e":0.0,"r":0},{"s":"CA","f":6,"w":13.0,"e":0.85,"r":1},{"s":"CO","f":8,"w":12.0,"e":0.1,"r":1},{"s":"CT","f":9,"w":11.333,"e":0.23,"r":1},{"s":"DC","f":11,"w":14.503,"e":0.4,"r":1},{"s":"DE","f":10,"w":9.25,"e":0.2,"r":0},{"s":"FL","f":12,"w":8.56,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":10.1,"e":0.2,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":9.627,"e":0.18,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.05,"r":1},{"s":"MA","f":25,"w":12.75,"e":0.3,"r":1},{"s":"MD","f":24,"w":11.0,"e":0.45,"r":1},{"s":"ME","f":23,"w":12.0,"e":0.12,"r":1},{"s":"MI","f":26,"w":9.65,"e":0.06,"r":1},{"s":"MN","f":27,"w":10.0,"e":0.35,"r":1},{"s":"MO","f":29,"w":9.45,"e":0.0,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":8.65,"e":0.03,"r":1},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":9.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":11.0,"e":0.4,"r":1},{"s":"NM","f":35,"w":9.0,"e":0.17,"r":1},{"s":"NV","f":32,"w":8.627,"e":0.0,"r":0},{"s":"NY","f":36,"w":11.802,"e":0.3,"r":1},{"s":"OH","f":39,"w":8.7,"e":0.3,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":0},{"s":"OR","f":41,"w":11.627,"e":0.09,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":10.751,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.625,"r":0},{"s":"SD","f":46,"w":9.3,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":7.25,"e":0.2,"r":0},{"s":"VT","f":50,"w":10.96,"e":0.36,"r":1},{"s":"WA","f":53,"w":13.5,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2021":[{"s":"AK","f":2,"w":10.34,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":11.0,"e":0.0,"r":0},{"s":"AZ","f":4,"w":12.15,"e":0.0,"r":0},{"s":"CA","f":6,"w":14.0,"e":0.45,"r":1},{"s":"CO","f":8,"w":12.32,"e":0.1,"r":1},{"s":"CT","f":9,"w":12.419,"e":0.23,"r":1},{"s":"DC","f":11,"w":15.101,"e":0.4,"r":1},{"s":"DE","f":10,"w":9.25,"e":0.2,"r":1},{"s":"FL","f":12,"w":8.927,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":10.1,"e":0.2,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":11.0,"e":0.18,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.09,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.05,"r":1},{"s":"MA","f":25,"w":13.5,"e":0.3,"r":1},{"s":"MD","f":24,"w":11.75,"e":0.45,"r":1},{"s":"ME","f":23,"w":12.15,"e":0.12,"r":1},{"s":"MI","f":26,"w":9.65,"e":0.06,"r":1},{"s":"MN","f":27,"w":10.08,"e":0.35,"r":1},{"s":"MO","f":29,"w":10.3,"e":0.1,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":8.75,"e":0.03,"r":1},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":9.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":12.0,"e":0.4,"r":1},{"s":"NM","f":35,"w":10.5,"e":0.2,"r":1},{"s":"NV","f":32,"w":9.378,"e":0.0,"r":0},{"s":"NY","f":36,"w":12.502,"e":0.3,"r":1},{"s":"OH","f":39,"w":8.8,"e":0.3,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":0},{"s":"OR","f":41,"w":12.378,"e":0.09,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":11.5,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":0.8333,"r":0},{"s":"SD","f":46,"w":9.45,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.0,"r":0},{"s":"VA","f":51,"w":8.76,"e":0.2,"r":0},{"s":"VT","f":50,"w":11.75,"e":0.36,"r":1},{"s":"WA","f":53,"w":13.96,"e":0.0,"r":1},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2022":[{"s":"AK","f":2,"w":10.34,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":11.0,"e":0.0,"r":0},{"s":"AZ","f":4,"w":12.8,"e":0.0,"r":0},{"s":"CA","f":6,"w":15.0,"e":0.45,"r":1},{"s":"CO","f":8,"w":12.56,"e":0.25,"r":1},{"s":"CT","f":9,"w":13.504,"e":0.305,"r":1},{"s":"DC","f":11,"w":15.654,"e":0.7,"r":1},{"s":"DE","f":10,"w":10.5,"e":0.045,"r":1},{"s":"FL","f":12,"w":10.255,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":10.579,"e":0.2,"r":0},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":12.0,"e":0.18,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.1,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.05,"r":1},{"s":"MA","f":25,"w":14.25,"e":0.3,"r":1},{"s":"MD","f":24,"w":12.5,"e":0.45,"r":1},{"s":"ME","f":23,"w":12.75,"e":0.12,"r":1},{"s":"MI","f":26,"w":9.87,"e":0.06,"r":1},{"s":"MN","f":27,"w":10.33,"e":0.35,"r":1},{"s":"MO","f":29,"w":11.15,"e":0.1,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":9.2,"e":0.03,"r":1},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":9.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":13.0,"e":0.4,"r":1},{"s":"NM","f":35,"w":11.5,"e":0.2,"r":1},{"s":"NV","f":32,"w":10.128,"e":0.0,"r":0},{"s":"NY","f":36,"w":13.203,"e":0.3,"r":1},{"s":"OH","f":39,"w":9.3,"e":0.3,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":13.128,"e":0.09,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":12.25,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":1.0417,"r":0},{"s":"SD","f":46,"w":9.95,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.15,"r":0},{"s":"VA","f":51,"w":11.0,"e":0.2,"r":0},{"s":"VT","f":50,"w":12.55,"e":0.36,"r":1},{"s":"WA","f":53,"w":14.49,"e":0.0,"r":1},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2023":[{"s":"AK","f":2,"w":10.85,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":11.0,"e":0.0,"r":0},{"s":"AZ","f":4,"w":13.85,"e":0.0,"r":0},{"s":"CA","f":6,"w":15.5,"e":0.45,"r":1},{"s":"CO","f":8,"w":13.65,"e":0.25,"r":1},{"s":"CT","f":9,"w":15.0,"e":0.23,"r":1},{"s":"DC","f":11,"w":17.0,"e":0.7,"r":1},{"s":"DE","f":10,"w":11.75,"e":0.045,"r":1},{"s":"FL","f":12,"w":12.0,"e":0.0,"r":0},{"s":"GA","f":13,"w":5.15,"e":0.0,"r":0},{"s":"HI","f":15,"w":12.0,"e":0.2,"r":1},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":1},{"s":"IL","f":17,"w":13.0,"e":0.2,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.1,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.05,"r":1},{"s":"MA","f":25,"w":15.0,"e":0.3,"r":1},{"s":"MD","f":24,"w":13.25,"e":0.28,"r":1},{"s":"ME","f":23,"w":13.8,"e":0.12,"r":1},{"s":"MI","f":26,"w":10.1,"e":0.3,"r":1},{"s":"MN","f":27,"w":10.59,"e":0.35,"r":1},{"s":"MO","f":29,"w":12.0,"e":0.1,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":9.95,"e":0.03,"r":1},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":10.5,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":14.13,"e":0.4,"r":1},{"s":"NM","f":35,"w":12.0,"e":0.25,"r":1},{"s":"NV","f":32,"w":11.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":14.2,"e":0.3,"r":1},{"s":"OH","f":39,"w":10.1,"e":0.3,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":14.2,"e":0.09,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":13.0,"e":0.15,"r":1},{"s":"SC","f":45,"w":7.25,"e":1.25,"r":0},{"s":"SD","f":46,"w":10.8,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.15,"r":0},{"s":"VA","f":51,"w":12.0,"e":0.15,"r":0},{"s":"VT","f":50,"w":13.18,"e":0.38,"r":1},{"s":"WA","f":53,"w":15.74,"e":0.0,"r":1},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":5.15,"e":0.0,"r":0}],"2024":[{"s":"AK","f":2,"w":11.73,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":11.0,"e":0.0,"r":0},{"s":"AZ","f":4,"w":14.35,"e":0.0,"r":0},{"s":"CA","f":6,"w":16.0,"e":0.45,"r":1},{"s":"CO","f":8,"w":14.42,"e":0.5,"r":1},{"s":"CT","f":9,"w":15.69,"e":0.4,"r":1},{"s":"DC","f":11,"w":17.0,"e":0.7,"r":1},{"s":"DE","f":10,"w":13.25,"e":0.045,"r":1},{"s":"FL","f":12,"w":12.0,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":14.0,"e":0.4,"r":1},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":14.0,"e":0.2,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.1,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.05,"r":1},{"s":"MA","f":25,"w":15.0,"e":0.4,"r":1},{"s":"MD","f":24,"w":15.0,"e":0.45,"r":1},{"s":"ME","f":23,"w":14.15,"e":0.25,"r":1},{"s":"MI","f":26,"w":10.33,"e":0.3,"r":1},{"s":"MN","f":27,"w":10.85,"e":0.33,"r":1},{"s":"MO","f":29,"w":12.3,"e":0.2,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":10.3,"e":0.1,"r":1},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":12.0,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":15.13,"e":0.4,"r":1},{"s":"NM","f":35,"w":12.0,"e":0.25,"r":1},{"s":"NV","f":32,"w":11.25,"e":0.0,"r":0},{"s":"NY","f":36,"w":15.0,"e":0.3,"r":1},{"s":"OH","f":39,"w":10.45,"e":0.3,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":14.2,"e":0.09,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":14.0,"e":0.16,"r":1},{"s":"SC","f":45,"w":7.25,"e":1.25,"r":0},{"s":"SD","f":46,"w":11.2,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.2,"r":0},{"s":"VA","f":51,"w":12.0,"e":0.15,"r":1},{"s":"VT","f":50,"w":13.67,"e":0.38,"r":1},{"s":"WA","f":53,"w":16.28,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}],"2025":[{"s":"AK","f":2,"w":13.0,"e":0.0,"r":0},{"s":"AL","f":1,"w":7.25,"e":0.0,"r":0},{"s":"AR","f":5,"w":11.0,"e":0.0,"r":0},{"s":"AZ","f":4,"w":14.7,"e":0.0,"r":0},{"s":"CA","f":6,"w":16.5,"e":0.45,"r":1},{"s":"CO","f":8,"w":14.81,"e":0.5,"r":1},{"s":"CT","f":9,"w":16.35,"e":0.4,"r":1},{"s":"DC","f":11,"w":17.5,"e":0.85,"r":1},{"s":"DE","f":10,"w":15.0,"e":0.045,"r":1},{"s":"FL","f":12,"w":14.0,"e":0.0,"r":0},{"s":"GA","f":13,"w":7.25,"e":0.0,"r":0},{"s":"HI","f":15,"w":14.0,"e":0.4,"r":1},{"s":"IA","f":19,"w":7.25,"e":0.15,"r":1},{"s":"ID","f":16,"w":7.25,"e":0.0,"r":0},{"s":"IL","f":17,"w":15.0,"e":0.2,"r":1},{"s":"IN","f":18,"w":7.25,"e":0.1,"r":1},{"s":"KS","f":20,"w":7.25,"e":0.17,"r":1},{"s":"KY","f":21,"w":7.25,"e":0.0,"r":0},{"s":"LA","f":22,"w":7.25,"e":0.05,"r":1},{"s":"MA","f":25,"w":15.0,"e":0.4,"r":1},{"s":"MD","f":24,"w":15.0,"e":0.45,"r":1},{"s":"ME","f":23,"w":14.65,"e":0.25,"r":1},{"s":"MI","f":26,"w":10.56,"e":0.3,"r":1},{"s":"MN","f":27,"w":11.13,"e":0.33,"r":1},{"s":"MO","f":29,"w":13.75,"e":0.2,"r":0},{"s":"MS","f":28,"w":7.25,"e":0.0,"r":0},{"s":"MT","f":30,"w":10.55,"e":0.2,"r":1},{"s":"NC","f":37,"w":7.25,"e":0.0,"r":0},{"s":"ND","f":38,"w":7.25,"e":0.0,"r":0},{"s":"NE","f":31,"w":13.5,"e":0.1,"r":1},{"s":"NH","f":33,"w":7.25,"e":0.0,"r":0},{"s":"NJ","f":34,"w":15.49,"e":0.4,"r":1},{"s":"NM","f":35,"w":12.0,"e":0.25,"r":1},{"s":"NV","f":32,"w":12.0,"e":0.0,"r":0},{"s":"NY","f":36,"w":15.5,"e":0.3,"r":1},{"s":"OH","f":39,"w":10.7,"e":0.3,"r":0},{"s":"OK","f":40,"w":7.25,"e":0.05,"r":1},{"s":"OR","f":41,"w":14.7,"e":0.09,"r":1},{"s":"PA","f":42,"w":7.25,"e":0.0,"r":0},{"s":"RI","f":44,"w":15.0,"e":0.16,"r":1},{"s":"SC","f":45,"w":7.25,"e":1.25,"r":0},{"s":"SD","f":46,"w":11.5,"e":0.0,"r":0},{"s":"TN","f":47,"w":7.25,"e":0.0,"r":0},{"s":"TX","f":48,"w":7.25,"e":0.0,"r":0},{"s":"UT","f":49,"w":7.25,"e":0.2,"r":0},{"s":"VA","f":51,"w":12.41,"e":0.2,"r":1},{"s":"VT","f":50,"w":14.01,"e":0.38,"r":1},{"s":"WA","f":53,"w":16.66,"e":0.0,"r":0},{"s":"WI","f":55,"w":7.25,"e":0.11,"r":1},{"s":"WV","f":54,"w":8.75,"e":0.0,"r":0},{"s":"WY","f":56,"w":7.25,"e":0.0,"r":0}]}};
+
+// ============================================================
+// Theme / font
+// ============================================================
+function toggleTheme(){const h=document.documentElement,d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('themeIcon').innerHTML=d?'&#9790;':'&#9728;';document.getElementById('themeLabel').textContent=d?'Dark':'Light';draw()}
+let fontScale=1;
+function adjustFont(d){if(d===0)fontScale=1;else fontScale=Math.max(.7,Math.min(1.5,fontScale+d*.1));document.documentElement.style.setProperty('--fs',fontScale);setTimeout(()=>{rsz();draw()},10)}
+function isDark(){return document.documentElement.getAttribute('data-theme')==='dark'}
+function cssVar(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim()}
+
+// Reference drawer
+function toggleRef(){document.getElementById('refDrawer').classList.toggle('open');document.getElementById('refBtn').classList.toggle('open')}
+document.getElementById('refTabs').addEventListener('click',e=>{
+  if(!e.target.classList.contains('ref-tab'))return;
+  document.querySelectorAll('.ref-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.ref-panel').forEach(p=>p.classList.remove('active'));
+  e.target.classList.add('active');
+  document.querySelector('.ref-panel[data-tab="'+e.target.dataset.tab+'"]').classList.add('active');
+});
+
+// ============================================================
+// State
+// ============================================================
+const C=document.getElementById('ch'),ctx=C.getContext('2d');
+const dpr=window.devicePixelRatio||1;
+function rsz(){const r=C.getBoundingClientRect();C.width=r.width*dpr;C.height=r.height*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+rsz();window.addEventListener('resize',()=>{rsz();draw()});
+
+let curYear=2015;
+let showStateEITC=true;
+let nonrefAsCash=true;
+let showCat={B:true,M:true,E:true,N:false};
+let showKinkDots=true;
+let showEnvelope=true;
+let hoverAbb=null;     // abbreviation of highlighted state (persists across re-renders)
+let hoverFedHover=false; // hovering on federal line
+let currentStates=[]; // {abb, mw, eitc, ref, cat, color, pts:[{h,y}], kinkPts:[{h,y}×3]}
+let fedPts=[];        // federal reference points
+let fedKinkPts=[];    // {h,y} ×3 for federal kinks
+function hoverIdx(){ if(!hoverAbb) return -1; for(var i=0;i<currentStates.length;i++) if(currentStates[i].abb===hoverAbb) return i; return -1; }
+
+// ============================================================
+// EITC math
+// ============================================================
+function eitcFn(earn, p){
+  // p: {pi, pb, mc, po, ob, oe}
+  if(earn<=0) return 0;
+  if(earn < p.pb) return p.pi * earn;
+  if(earn < p.ob) return p.mc;
+  if(earn < p.oe) return Math.max(0, p.mc - p.po*(earn - p.ob));
+  return 0;
+}
+
+// Build a state's piecewise budget line: only kink hours matter
+function buildPts(wage, p, sRate, refundable, hMax){
+  if(wage<=0) wage=0.01;
+  // include state EITC?
+  var s = sRate;
+  if(s>0 && !refundable && !nonrefAsCash) s = 0;
+  // Hours at each earnings kink
+  var hKinks = [0, p.pb/wage, p.ob/wage, p.oe/wage, hMax];
+  hKinks.sort((a,b)=>a-b);
+  var pts=[];
+  for(var i=0;i<hKinks.length;i++){
+    var h=hKinks[i];
+    if(h<0) continue;
+    if(h>hMax){ if(pts.length===0 || pts[pts.length-1].h<hMax){ var e=wage*hMax; var fed=eitcFn(e,p); pts.push({h:hMax, y:e+fed*(1+s)}); } break; }
+    var e=wage*h; var fed=eitcFn(e,p); var y = e + fed*(1+s);
+    pts.push({h:h, y:y});
+  }
+  return pts;
+}
+
+// ============================================================
+// Category + color
+// ============================================================
+function categorize(stateRow, fedMW){
+  // Tolerance: treat MW equal-to-federal within 1 cent
+  var hMW = stateRow.w > fedMW + 0.01;
+  var hEI = stateRow.e > 0.0005;
+  // For refundability: in zero-out mode, a non-refundable state with no MW premium ⇒ "neither"
+  if(showStateEITC && !nonrefAsCash && stateRow.r===0) hEI=false;
+  if(!showStateEITC) hEI=false;
+  if(hMW && hEI) return 'B';
+  if(hMW) return 'M';
+  if(hEI) return 'E';
+  return 'N';
+}
+function colorFor(cat){
+  if(cat==='B') return cssVar('--cBoth');
+  if(cat==='M') return cssVar('--cMW');
+  if(cat==='E') return cssVar('--cEI');
+  return cssVar('--mt');
+}
+function strokeForState(s){
+  // Width scales weakly with policy magnitude
+  var mwPrem = Math.max(0, s.mw/DATA.fedM[curYear] - 1);
+  var eiAdd = showStateEITC ? Math.max(0, s.eitc * (s.r||nonrefAsCash?1:0)) : 0;
+  var g = mwPrem + eiAdd;
+  return 1.25 + Math.min(1.6, g*1.7);
+}
+
+// ============================================================
+// Geometry
+// ============================================================
+var hMin=0, hMax=5000, yMax=72000;
+const mg={top:24,right:22,bottom:46,left:64};
+function cW(){return C.getBoundingClientRect().width-mg.left-mg.right}
+function cH(){return C.getBoundingClientRect().height-mg.top-mg.bottom}
+function xS(h){return mg.left+((h-hMin)/(hMax-hMin))*cW()}
+function yS(y){return mg.top+cH()-(y/yMax)*cH()}
+function xInv(px){return hMin + (px-mg.left)/cW()*(hMax-hMin)}
+function yInv(py){return (mg.top+cH()-py)/cH()*yMax}
+
+function txCol(){return isDark()?'#7a7870':'#8a8680'}
+function axCol(){return isDark()?'#444':'#bbb'}
+
+function drawAxes(){
+  const tc=txCol(),ac=axCol(),y0=yS(0),x0=xS(0);
+  ctx.strokeStyle=ac;ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(mg.left,y0);ctx.lineTo(mg.left+cW(),y0);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x0,mg.top);ctx.lineTo(x0,mg.top+cH());ctx.stroke();
+  // x ticks every 500h
+  ctx.fillStyle=tc;ctx.font='9px "JetBrains Mono"';ctx.textAlign='center';
+  for(var hh=0;hh<=hMax;hh+=1000){
+    var x=xS(hh);
+    ctx.beginPath();ctx.moveTo(x,y0);ctx.lineTo(x,y0+3);ctx.strokeStyle=ac;ctx.stroke();
+    ctx.fillText(hh.toLocaleString(),x,y0+14);
+  }
+  // Minor ticks every 500h
+  for(var hh=500;hh<=hMax;hh+=1000){
+    var x=xS(hh);
+    ctx.beginPath();ctx.moveTo(x,y0);ctx.lineTo(x,y0+2);ctx.strokeStyle=ac;ctx.globalAlpha=0.5;ctx.stroke();ctx.globalAlpha=1;
+  }
+  // FT reference line
+  ctx.strokeStyle=isDark()?'rgba(255,255,255,.07)':'rgba(0,0,0,.07)';ctx.setLineDash([2,4]);
+  ctx.beginPath();ctx.moveTo(xS(2080),mg.top);ctx.lineTo(xS(2080),y0);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle=isDark()?'rgba(255,255,255,.22)':'rgba(0,0,0,.28)';
+  ctx.font='8px "JetBrains Mono"';ctx.fillText('FT (2,080 h/yr)',xS(2080),mg.top+10);
+  // y ticks
+  ctx.textAlign='right';ctx.fillStyle=tc;ctx.font='9px "JetBrains Mono"';
+  for(var i=0;i<=yMax;i+=10000){
+    var y=yS(i);
+    ctx.beginPath();ctx.moveTo(xS(0)-3,y);ctx.lineTo(xS(0),y);ctx.strokeStyle=ac;ctx.stroke();
+    ctx.fillText('$'+(i/1000)+'k',xS(0)-6,y+3);
+  }
+  // axis labels
+  ctx.fillStyle=isDark()?'#aaa':'#555';ctx.font='10px "Libre Baskerville",serif';ctx.textAlign='center';
+  ctx.fillText('Annual hours worked (household, 2-kid MFJ)',mg.left+cW()/2,mg.top+cH()+36);
+  ctx.save();ctx.translate(14,mg.top+cH()/2);ctx.rotate(-Math.PI/2);
+  ctx.fillText('Annual earnings + EITC + state EITC ($)',0,0);ctx.restore();
+}
+
+function drawPath(pts,col,lw,alpha,dash){
+  if(pts.length<2) return;
+  ctx.beginPath();ctx.strokeStyle=col;ctx.globalAlpha=(alpha==null?1:alpha);ctx.lineWidth=lw;ctx.lineJoin='round';ctx.lineCap='round';
+  if(dash) ctx.setLineDash(dash);
+  pts.forEach(function(p,i){i===0?ctx.moveTo(xS(p.h),yS(p.y)):ctx.lineTo(xS(p.h),yS(p.y))});
+  ctx.stroke();
+  ctx.setLineDash([]);ctx.globalAlpha=1;
+}
+function dot(h,y,r,fill,stroke,sw){
+  ctx.beginPath();ctx.arc(xS(h),yS(y),r,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();
+  if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=sw||1.5;ctx.stroke();}
+}
+
+// ============================================================
+// Build state lines for current year
+// ============================================================
+function rebuild(){
+  var fedP=DATA.fedE[curYear];
+  var fedW=DATA.fedM[curYear];
+  fedPts = buildPts(fedW, fedP, 0, true, hMax);
+  // Federal kinks (always exactly 3 kinks)
+  fedKinkPts = [];
+  [fedP.pb, fedP.ob, fedP.oe].forEach(function(earn){
+    var h = earn/fedW;
+    var c = eitcFn(earn, fedP);
+    fedKinkPts.push({h:h, y:earn+c});
+  });
+  var arr=[];
+  var states=DATA.st[curYear]||[];
+  for(var i=0;i<states.length;i++){
+    var s=states[i];
+    var row = {abb:s.s, mw:s.w, eitc:s.e, ref:s.r};
+    row.cat = categorize({w:s.w, e:s.e, r:s.r}, fedW);
+    row.color = colorFor(row.cat);
+    var sRate = showStateEITC ? s.e : 0;
+    if(sRate>0 && !s.r && !nonrefAsCash) sRate=0; // effective rate
+    row.pts = buildPts(s.w, fedP, showStateEITC ? s.e : 0, s.r===1, hMax);
+    row.kinkPts = [];
+    [fedP.pb, fedP.ob, fedP.oe].forEach(function(earn){
+      var h = earn/s.w;
+      var c = eitcFn(earn, fedP);
+      row.kinkPts.push({h:h, y:earn + c*(1+sRate)});
+    });
+    arr.push(row);
+  }
+  // Sort: 'N' first (drawn behind), then E, then M, then B (most prominent)
+  var ord={N:0,E:1,M:2,B:3};
+  arr.sort(function(a,b){return ord[a.cat]-ord[b.cat]});
+  currentStates = arr;
+}
+
+// ============================================================
+// Kink markers / envelope / coord labels
+// ============================================================
+const KINK_LBL = ['plateau begin','phase-out begin','phase-out end'];
+const KINK_LBL_SHORT = ['plateau','PO begin','PO end'];
+
+function envelopeByCat(){
+  // For each category and each kink index k, find (xMin,xMax,yMin,yMax) across visible states
+  var env={};
+  ['B','M','E','N'].forEach(function(c){
+    env[c]=[
+      {xMin:Infinity,xMax:-Infinity,yMin:Infinity,yMax:-Infinity,n:0},
+      {xMin:Infinity,xMax:-Infinity,yMin:Infinity,yMax:-Infinity,n:0},
+      {xMin:Infinity,xMax:-Infinity,yMin:Infinity,yMax:-Infinity,n:0}
+    ];
+  });
+  for(var i=0;i<currentStates.length;i++){
+    var s=currentStates[i];
+    if(!showCat[s.cat]) continue;
+    for(var k=0;k<3;k++){
+      var p=s.kinkPts[k];
+      var e=env[s.cat][k];
+      if(p.h<e.xMin) e.xMin=p.h;
+      if(p.h>e.xMax) e.xMax=p.h;
+      if(p.y<e.yMin) e.yMin=p.y;
+      if(p.y>e.yMax) e.yMax=p.y;
+      e.n++;
+    }
+  }
+  return env;
+}
+
+function drawEnvelopes(){
+  if(!showEnvelope) return;
+  var env=envelopeByCat();
+  var L=mg.left, R=mg.left+cW(), T=mg.top, Bx=mg.top+cH();
+  // Draw in order N, E, M, B so most-relevant on top
+  ['N','E','M','B'].forEach(function(cat){
+    if(!showCat[cat]) return;
+    var col=colorFor(cat);
+    for(var k=0;k<3;k++){
+      var e=env[cat][k];
+      if(e.n<2) continue;
+      // Skip entirely off-chart
+      if(e.xMin>hMax) continue;
+      // Pixel coordinates of the kink envelope (unclipped, unpadded)
+      var x0_raw=xS(e.xMin), x1_raw=xS(e.xMax);
+      var yt_raw=yS(e.yMax),  yb_raw=yS(e.yMin); // yt = top in px, yb = bottom in px
+      // Detect zero-span (in pixels)
+      var hasXSpan = (x1_raw - x0_raw) >= 1;
+      var hasYSpan = (yb_raw - yt_raw) >= 1;
+      // Clip to chart bounds
+      var x0=Math.max(L, Math.min(R, x0_raw));
+      var x1=Math.max(L, Math.min(R, x1_raw));
+      var yt=Math.max(T, Math.min(Bx, yt_raw));
+      var yb=Math.max(T, Math.min(Bx, yb_raw));
+      ctx.fillStyle=col; ctx.strokeStyle=col;
+      // ----- Y-shadow: from y-axis to rectangle's left edge at the y range -----
+      if(x0>L+1){
+        if(hasYSpan){
+          // Band with width
+          ctx.globalAlpha=0.055;
+          ctx.fillRect(L, yt, x0-L, yb-yt);
+        } else {
+          // Zero-width band → line at single y value, extending to y-axis
+          ctx.globalAlpha=0.45;
+          ctx.lineWidth=1.2;
+          ctx.setLineDash([5,3]);
+          ctx.beginPath();
+          ctx.moveTo(L, yb); ctx.lineTo(x0, yb);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+      // ----- X-shadow: from rectangle's bottom edge to x-axis at the x range -----
+      if(yb<Bx-1){
+        if(hasXSpan){
+          // Band with width
+          ctx.globalAlpha=0.055;
+          ctx.fillRect(x0, yb, x1-x0, Bx-yb);
+        } else {
+          // Zero-width band → line at single x value, extending to x-axis
+          ctx.globalAlpha=0.45;
+          ctx.lineWidth=1.2;
+          ctx.setLineDash([5,3]);
+          ctx.beginPath();
+          ctx.moveTo(x0, yb); ctx.lineTo(x0, Bx);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+      // ----- Main shape at the kink itself -----
+      if(hasXSpan && hasYSpan){
+        // Both dimensions vary → rectangle
+        ctx.globalAlpha=0.13;
+        ctx.fillRect(x0, yt, x1-x0, yb-yt);
+        ctx.globalAlpha=0.55;
+        ctx.lineWidth=1;
+        ctx.setLineDash([4,3]);
+        ctx.strokeRect(x0, yt, x1-x0, yb-yt);
+        ctx.setLineDash([]);
+      } else if(hasXSpan){
+        // Only x varies → horizontal line at y = e.yMin (= e.yMax)
+        ctx.globalAlpha=0.7;
+        ctx.lineWidth=2;
+        ctx.setLineDash([5,3]);
+        ctx.beginPath();
+        ctx.moveTo(x0, yb); ctx.lineTo(x1, yb);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else if(hasYSpan){
+        // Only y varies → vertical line at x = e.xMin (= e.xMax)
+        ctx.globalAlpha=0.7;
+        ctx.lineWidth=2;
+        ctx.setLineDash([5,3]);
+        ctx.beginPath();
+        ctx.moveTo(x0, yt); ctx.lineTo(x0, yb);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else {
+        // Neither dimension varies → single point at the corner where the two shadow lines meet
+        ctx.globalAlpha=0.75;
+        ctx.beginPath();
+        ctx.arc(x0, yb, 3, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.globalAlpha=1;
+    }
+  });
+}
+
+function drawEnvelopeLabels(){
+  // Drawn after kink dots so they sit on top. Compact "xMin–xMax h × yMin–yMax".
+  if(!showEnvelope) return;
+  var env=envelopeByCat();
+  ctx.font='8px "JetBrains Mono"';
+  ['N','E','M','B'].forEach(function(cat){
+    if(!showCat[cat]) return;
+    var col=colorFor(cat);
+    for(var k=0;k<3;k++){
+      var e=env[cat][k];
+      if(e.n<2) continue;
+      var x0=xS(e.xMin), y0=yS(e.yMax); // top-left in pixel space
+      // Off-chart guard
+      if(x0>mg.left+cW()-20||y0>mg.top+cH()-10) continue;
+      var lbl = KINK_LBL_SHORT[k]+': '+Math.round(e.xMin).toLocaleString()+'–'+Math.round(e.xMax).toLocaleString()+' h · $'+Math.round(e.yMin/1000)+'–'+Math.round(e.yMax/1000)+'k';
+      var tx=Math.max(mg.left+2,x0+3), ty=Math.max(mg.top+9,y0-3);
+      // Translucent backing for readability
+      var w=ctx.measureText(lbl).width;
+      ctx.fillStyle=isDark()?'rgba(18,18,26,.82)':'rgba(255,255,255,.85)';
+      ctx.fillRect(tx-2,ty-9,w+4,11);
+      ctx.fillStyle=col;
+      ctx.textAlign='left';
+      ctx.fillText(lbl,tx,ty);
+    }
+  });
+}
+
+function drawKinkDots(){
+  if(!showKinkDots) return;
+  var hi=hoverIdx();
+  // State kinks
+  for(var i=0;i<currentStates.length;i++){
+    var s=currentStates[i];
+    if(!showCat[s.cat]) continue;
+    if(i===hi) continue; // highlighted state gets its own bigger dots later
+    var alpha = (s.cat==='N')?0.35:0.78;
+    for(var k=0;k<3;k++){
+      var p=s.kinkPts[k];
+      if(p.h>hMax||p.h<0) continue;
+      ctx.beginPath();
+      ctx.arc(xS(p.h),yS(p.y),2.4,0,Math.PI*2);
+      ctx.globalAlpha=alpha;
+      ctx.fillStyle=s.color;
+      ctx.fill();
+      ctx.globalAlpha=1;
+    }
+  }
+}
+
+function drawFedKinkLabels(){
+  // Always-on coord labels for federal kinks (the reference)
+  var col=cssVar('--cFed');
+  ctx.font='8.5px "JetBrains Mono"';
+  ctx.textAlign='left';
+  for(var k=0;k<3;k++){
+    var p=fedKinkPts[k];
+    if(p.h>hMax||p.h<0) continue;
+    var x=xS(p.h), y=yS(p.y);
+    var lbl = KINK_LBL_SHORT[k]+' ('+Math.round(p.h).toLocaleString()+' h, $'+Math.round(p.y).toLocaleString()+')';
+    // Offset above for first kink, below for later ones to avoid overlap with line
+    var dx=6, dy=(k===0?-7:14);
+    var tw=ctx.measureText(lbl).width;
+    // Flip side near right edge
+    if(x+dx+tw>mg.left+cW()-4){ dx=-tw-6; }
+    ctx.fillStyle=isDark()?'rgba(18,18,26,.86)':'rgba(255,255,255,.88)';
+    ctx.fillRect(x+dx-2,y+dy-9,tw+4,11);
+    ctx.fillStyle=col;
+    ctx.fillText(lbl,x+dx,y+dy);
+  }
+}
+
+function drawHoverCoords(){
+  var hi=hoverIdx();
+  if(hi<0) return;
+  var s=currentStates[hi];
+  ctx.font='8.5px "JetBrains Mono"';
+  ctx.textAlign='left';
+  for(var k=0;k<3;k++){
+    var p=s.kinkPts[k];
+    if(p.h>hMax||p.h<0) continue;
+    var x=xS(p.h), y=yS(p.y);
+    var lbl = s.abb+' '+KINK_LBL_SHORT[k]+' ('+Math.round(p.h).toLocaleString()+' h, $'+Math.round(p.y).toLocaleString()+')';
+    var dx=8, dy=-8;
+    var tw=ctx.measureText(lbl).width;
+    if(x+dx+tw>mg.left+cW()-4){ dx=-tw-8; }
+    if(y+dy<mg.top+10){ dy=14; }
+    ctx.fillStyle=isDark()?'rgba(18,18,26,.92)':'rgba(255,255,255,.94)';
+    ctx.fillRect(x+dx-2,y+dy-9,tw+4,11);
+    ctx.fillStyle=s.color;
+    ctx.fillText(lbl,x+dx,y+dy);
+  }
+}
+
+
+function draw(){
+  rebuild();
+  var w=C.getBoundingClientRect().width,h=C.getBoundingClientRect().height;
+  ctx.clearRect(0,0,w,h);
+  drawAxes();
+  document.getElementById('titleYear').textContent=curYear;
+  updateParamTable();
+  updateStatePanel();
+  updateYrCtx();
+
+  // 0) Envelope rectangles (lowest layer behind lines)
+  drawEnvelopes();
+
+  // 1) Draw all non-highlighted state lines in chosen order (dashed)
+  var hi=hoverIdx();
+  for(var i=0;i<currentStates.length;i++){
+    var s=currentStates[i];
+    if(!showCat[s.cat]) continue;
+    if(i===hi) continue;
+    var alpha = (s.cat==='N')?0.18:0.62;
+    drawPath(s.pts, s.color, strokeForState(s), alpha, [10,3]);
+  }
+  // 2) Federal reference line on top (heavy)
+  var fedCol = cssVar('--cFed');
+  drawPath(fedPts, fedCol, 3.6, hoverFedHover?1:0.92);
+  // 3) Federal kink dots (always drawn — they're the reference)
+  for(var k=0;k<fedKinkPts.length;k++){
+    var p=fedKinkPts[k]; if(p.h>hMax) continue;
+    dot(p.h,p.y,3.5,fedCol,isDark()?'#000':'#fff',1.2);
+  }
+  // 4) State kink dots
+  drawKinkDots();
+  // 5) Hover-highlighted state on very top
+  var hiF=hoverIdx();
+  if(hiF>=0 && hiF<currentStates.length){
+    var hs=currentStates[hiF];
+    drawPath(hs.pts, hs.color, Math.max(2.6,strokeForState(hs)+1.2), 1);
+    // kink dots for highlighted state (larger)
+    for(var k=0;k<hs.kinkPts.length;k++){
+      var p=hs.kinkPts[k]; if(p.h>hMax) continue;
+      dot(p.h,p.y,3.6,hs.color,isDark()?'#000':'#fff',1.3);
+    }
+  }
+  // 6) Federal coord labels (only when kink markers are on, to avoid clutter when hidden)
+  if(showKinkDots) drawFedKinkLabels();
+  // 7) Hovered state coord labels
+  if(showKinkDots) drawHoverCoords();
+}
+
+// ============================================================
+// Hover
+// ============================================================
+function lineY(pts, h){
+  // interpolate y at horizontal coordinate h
+  if(pts.length===0) return null;
+  if(h<=pts[0].h) return pts[0].y;
+  for(var i=1;i<pts.length;i++){
+    if(pts[i].h>=h){
+      var a=pts[i-1], b=pts[i];
+      if(b.h===a.h) return b.y;
+      return a.y + (h-a.h)*(b.y-a.y)/(b.h-a.h);
+    }
+  }
+  return pts[pts.length-1].y;
+}
+
+C.addEventListener('mousemove',function(ev){
+  var r=C.getBoundingClientRect();
+  var px=ev.clientX-r.left, py=ev.clientY-r.top;
+  if(px<mg.left||px>r.width-mg.right||py<mg.top||py>r.height-mg.bottom){
+    if(hoverAbb||hoverFedHover){hoverAbb=null;hoverFedHover=false;document.getElementById('tt').style.display='none';draw();}
+    return;
+  }
+  var h=xInv(px);
+  // Compute pixel distance to each visible state line
+  var best=-1, bestDist=10; // px threshold for "close enough"
+  var fedY = lineY(fedPts, h); var fedPx = yS(fedY);
+  var fedDist = Math.abs(py-fedPx);
+  for(var i=0;i<currentStates.length;i++){
+    var s=currentStates[i];
+    if(!showCat[s.cat]) continue;
+    var y=lineY(s.pts,h); if(y==null) continue;
+    var dpx = Math.abs(py - yS(y));
+    if(dpx<bestDist){ bestDist=dpx; best=i; }
+  }
+  var fedH = fedDist<10 && fedDist<bestDist;
+  var newAbb = fedH ? null : (best>=0 ? currentStates[best].abb : null);
+  if(newAbb!==hoverAbb || fedH!==hoverFedHover){
+    hoverAbb=newAbb;
+    hoverFedHover=fedH;
+    draw();
+  }
+  // Tooltip
+  var tt=document.getElementById('tt');
+  if(fedH){
+    var fp=DATA.fedE[curYear];
+    tt.innerHTML='<div class="tt-st"><span class="swatch" style="background:'+cssVar('--cFed')+'"></span> Federal reference</div>'+
+      '<div class="tt-row"><span>MW</span><span>$'+DATA.fedM[curYear].toFixed(2)+'/h</span></div>'+
+      '<div class="tt-row"><span>Max credit</span><span>$'+fp.mc.toLocaleString()+'</span></div>'+
+      '<div class="tt-row"><span>Phaseout begin</span><span>$'+fp.ob.toLocaleString()+'</span></div>'+
+      '<div class="tt-row"><span>Phaseout end</span><span>$'+fp.oe.toLocaleString()+'</span></div>';
+    tt.style.display='block';
+  } else if(best>=0){
+    var s=currentStates[best];
+    var sRate = showStateEITC ? s.eitc : 0;
+    var rfNote = s.eitc>0 ? (s.ref?'refundable':(nonrefAsCash?'non-ref (treated as cash)':'non-ref (zeroed)')) : '—';
+    tt.innerHTML='<div class="tt-st"><span class="swatch" style="background:'+s.color+'"></span>'+s.abb+'</div>'+
+      '<div class="tt-row"><span>State MW</span><span>$'+s.mw.toFixed(2)+'/h</span></div>'+
+      '<div class="tt-row"><span>vs. fed</span><span>'+(s.mw>DATA.fedM[curYear]+0.005?'+$'+(s.mw-DATA.fedM[curYear]).toFixed(2):'=')+'</span></div>'+
+      '<div class="tt-row"><span>State EITC</span><span>'+(s.eitc*100).toFixed(1)+'%</span></div>'+
+      '<div class="tt-row"><span>Refundable</span><span>'+rfNote+'</span></div>'+
+      '<div class="tt-row"><span>Category</span><span>'+({B:'MW + EITC',M:'MW only',E:'EITC only',N:'neither'}[s.cat])+'</span></div>';
+    tt.style.display='block';
+  } else {
+    tt.style.display='none';
+  }
+  // position tooltip
+  if(tt.style.display==='block'){
+    var tw=tt.offsetWidth, th=tt.offsetHeight;
+    var tx=px+14, ty=py+10;
+    if(tx+tw>r.width-4) tx=px-tw-12;
+    if(ty+th>r.height-4) ty=py-th-10;
+    tt.style.left=tx+'px'; tt.style.top=ty+'px';
+  }
+});
+C.addEventListener('mouseleave',function(){
+  if(hoverAbb||hoverFedHover){hoverAbb=null;hoverFedHover=false;draw();}
+  document.getElementById('tt').style.display='none';
+});
+
+// ============================================================
+// Side panel + parameter table + year-context blurb
+// ============================================================
+function updateParamTable(){
+  var fp=DATA.fedE[curYear], fw=DATA.fedM[curYear];
+  var states=currentStates;
+  var nB=0,nM=0,nE=0,nN=0,maxMW=0,maxEITC=0,maxMWst='—',maxEIst='—';
+  for(var i=0;i<states.length;i++){
+    var s=states[i];
+    if(s.cat==='B') nB++; else if(s.cat==='M') nM++; else if(s.cat==='E') nE++; else nN++;
+    if(s.mw>maxMW){maxMW=s.mw;maxMWst=s.abb;}
+    if(s.eitc>maxEITC){maxEITC=s.eitc;maxEIst=s.abb;}
+  }
+  var rows=[
+    {l:'Fed EITC max', vF:'$'+fp.mc.toLocaleString(), vM:'—', vE:'+top-up', vB:'+top-up', vMW:'phaseout begin $'+fp.ob.toLocaleString()},
+    {l:'Fed MW (annual mean)', vF:'$'+fw.toFixed(2)+'/h', vM:'>fed', vE:'=fed', vB:'>fed', vMW:'phaseout end $'+fp.oe.toLocaleString()},
+    {l:'States (n)', vF:'1', vM:nM, vE:nE, vB:nB, vMW:'(neither: '+nN+')'},
+    {l:'Highest state', vF:'—', vM:'MW: '+maxMWst+' $'+maxMW.toFixed(2), vE:'EITC: '+maxEIst+' '+(maxEITC*100).toFixed(0)+'%', vB:'—', vMW:'phase-in '+(fp.pi*100).toFixed(0)+'% up to $'+fp.pb.toLocaleString()}
+  ];
+  var h='<span class="hd">'+curYear+' / 2-kid MFJ</span>'+
+        '<span class="hd vmf">Federal</span>'+
+        '<span class="hd vM">MW only</span>'+
+        '<span class="hd vE">EITC only</span>'+
+        '<span class="hd vB">Both</span>'+
+        '<span class="hd">Fed params</span>'+
+        '<span class="hd"></span>';
+  for(var r=0;r<rows.length;r++){
+    var row=rows[r];
+    h+='<span>'+row.l+'</span>';
+    h+='<span class="vmf">'+row.vF+'</span>';
+    h+='<span class="vM">'+row.vM+'</span>';
+    h+='<span class="vE">'+row.vE+'</span>';
+    h+='<span class="vB">'+row.vB+'</span>';
+    h+='<span style="color:var(--tx)">'+row.vMW+'</span>';
+    h+='<span></span>';
+  }
+  document.getElementById('pt').innerHTML=h;
+}
+
+function updateStatePanel(){
+  var groups={B:[],M:[],E:[],N:[]};
+  for(var i=0;i<currentStates.length;i++) groups[currentStates[i].cat].push(currentStates[i]);
+  for(var k in groups) groups[k].sort(function(a,b){
+    if(k==='B') return (b.mw-a.mw)+(b.eitc-a.eitc);
+    if(k==='M') return b.mw-a.mw;
+    if(k==='E') return b.eitc-a.eitc;
+    return a.abb.localeCompare(b.abb);
+  });
+  var lbl={
+    B:{name:'Higher MW + state EITC', cls:'bt', sw:cssVar('--cBoth')},
+    M:{name:'Higher MW only',          cls:'mw', sw:cssVar('--cMW')},
+    E:{name:'State EITC only',         cls:'ei', sw:cssVar('--cEI')},
+    N:{name:'Neither (overlap fed)',   cls:'nn', sw:cssVar('--mt')}
+  };
+  var html='';
+  // ----- Envelope summary table (kink ranges per visible category) -----
+  if(showEnvelope){
+    var env=envelopeByCat();
+    var anyShown=false;
+    var envHtml='<div class="sp-row sp-env"><div class="sp-title">Kink ranges (hours, income) by category</div>';
+    envHtml += '<table class="env-tbl"><thead><tr><th></th><th>n</th><th>plateau begin</th><th>phase-out begin</th><th>phase-out end</th></tr></thead><tbody>';
+    ['B','M','E','N'].forEach(function(c){
+      if(!showCat[c]) return;
+      var e=env[c]; if(e[0].n===0) return;
+      anyShown=true;
+      var fmt=function(o){
+        if(o.n<1) return '<span style="color:var(--mt)">&mdash;</span>';
+        var xSame = Math.abs(o.xMax-o.xMin)<0.5;
+        var ySame = Math.abs(o.yMax-o.yMin)<50;
+        var xStr = xSame
+          ? Math.round(o.xMin).toLocaleString()+' h'
+          : Math.round(o.xMin).toLocaleString()+'&ndash;'+Math.round(o.xMax).toLocaleString()+' h';
+        var yStr = ySame
+          ? '$'+(o.yMin/1000).toFixed(1)+'k'
+          : '$'+(o.yMin/1000).toFixed(1)+'&ndash;$'+(o.yMax/1000).toFixed(1)+'k';
+        return xStr + '<br><span style="color:var(--mt)">' + yStr + '</span>';
+      };
+      envHtml += '<tr><td><span class="swatch" style="background:'+lbl[c].sw+'"></span>'+lbl[c].name.replace(' state EITC','').replace('Higher ','')+'</td>'+
+        '<td>'+e[0].n+'</td>'+
+        '<td>'+fmt(e[0])+'</td>'+
+        '<td>'+fmt(e[1])+'</td>'+
+        '<td>'+fmt(e[2])+'</td>'+
+      '</tr>';
+    });
+    envHtml += '</tbody></table>';
+    // Federal reference row
+    var fp=DATA.fedE[curYear], fw=DATA.fedM[curYear];
+    var fpb_h=fp.pb/fw, fob_h=fp.ob/fw, foe_h=fp.oe/fw;
+    var fpb_y=fp.pb+fp.mc, fob_y=fp.ob+fp.mc, foe_y=fp.oe;
+    envHtml += '<div style="margin-top:5px;font-size:calc(8px*var(--fs));color:var(--mt)">'+
+      '<strong style="color:var(--cFed)">Federal:</strong> '+
+      'plateau ('+Math.round(fpb_h).toLocaleString()+' h, $'+Math.round(fpb_y).toLocaleString()+') &middot; '+
+      'PO begin ('+Math.round(fob_h).toLocaleString()+' h, $'+Math.round(fob_y).toLocaleString()+') &middot; '+
+      'PO end ('+Math.round(foe_h).toLocaleString()+' h, $'+Math.round(foe_y).toLocaleString()+')'+
+    '</div>';
+    envHtml += '</div>';
+    if(anyShown) html += envHtml;
+  }
+  // ----- Per-category state lists -----
+  ['B','M','E','N'].forEach(function(k){
+    if(!groups[k].length) return;
+    html += '<div class="sp-row">';
+    html += '<div class="sp-title"><span class="swatch" style="background:'+lbl[k].sw+'"></span>'+lbl[k].name+'<span class="ct">'+groups[k].length+' states</span></div>';
+    html += '<div class="state-grid">';
+    groups[k].forEach(function(s){
+      var det='';
+      if(k==='B') det=' $'+s.mw.toFixed(2)+'/'+(s.eitc*100).toFixed(0)+'%';
+      else if(k==='M') det=' $'+s.mw.toFixed(2);
+      else if(k==='E') det=' '+(s.eitc*100).toFixed(0)+'%'+(s.ref?'':'*');
+      var idx=currentStates.indexOf(s);
+      html += '<span class="st '+lbl[k].cls+'" data-idx="'+idx+'" style="cursor:pointer">'+s.abb+det+'</span>';
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('stPanel').innerHTML=html;
+  // Click-to-highlight from side panel
+  document.querySelectorAll('#stPanel .st').forEach(function(el){
+    el.addEventListener('click',function(){
+      var i=parseInt(el.getAttribute('data-idx'));
+      if(isNaN(i)||i<0||i>=currentStates.length) return;
+      var abb=currentStates[i].abb;
+      if(hoverAbb===abb){ hoverAbb=null; } else { hoverAbb=abb; hoverFedHover=false; }
+      draw();
+    });
+  });
+}
+
+const YR_NOTES={
+1991:'New MFJ phase-in (17.3%) + introduction of supplemental young-child credit',
+1996:'EITC reaches 40% phase-in for 2-kid; PRWORA passed',
+1997:'Fed MW step-up to $5.15 (Sep 1997); annual mean reflects partial year',
+2001:'Last year before EGTRRA MFJ premium',
+2002:'EGTRRA: +$1,000 MFJ phase-out premium',
+2007:'Fed MW resumed climbing: $5.85 effective Jul 2007',
+2008:'Fed MW $6.55 effective Jul 2008',
+2009:'ARRA: 3-kid tier (45%) + MFJ premium boosted to $5,000. Fed MW $7.25 effective Jul 2009',
+2010:'First full year at $7.25 fed MW',
+2012:'12 states have state EITC = at least 10% of federal',
+2014:'Wave of state MW increases begins',
+2018:'TCJA: standard deduction roughly doubled (no direct EITC change)',
+2019:'~30 states with MW > fed; ~25 with state EITC',
+2020:'COVID shock — state MWs continue rising',
+2021:'ARPA: childless EITC temporarily expanded (not 2-kid relevant)',
+2022:'Many state MWs > $13; biggest cross-state policy variation in the sample',
+2023:'CO EITC at 38&ndash;50%; DC ramping toward 100% match; WA WFTC implemented',
+2024:'CT boosted state EITC to 40%; CO at 50%; MI to 30% (effective from 2022)',
+2025:'DC EITC up to 85% of federal; MT doubled to 20%; VA to 20% refundable'
+};
+function updateYrCtx(){
+  var ctx=YR_NOTES[curYear]||'';
+  var fp=DATA.fedE[curYear];
+  document.getElementById('yrCtx').textContent =
+    'Fed MW $'+DATA.fedM[curYear].toFixed(2)+' / 2-kid MFJ max credit $'+fp.mc.toLocaleString()+
+    ' (phase-in '+(fp.pi*100).toFixed(0)+'%, phase-out '+(fp.po*100).toFixed(2)+'%)' + (ctx?' — '+ctx:'');
+}
+
+// ============================================================
+// Controls
+// ============================================================
+document.getElementById('yrS').addEventListener('input',function(e){
+  curYear=parseInt(e.target.value);
+  document.getElementById('yrL').textContent=curYear;
+  draw();
+});
+document.getElementById('seOn').addEventListener('click',function(){
+  if(showStateEITC) return;
+  showStateEITC=true;
+  document.getElementById('seOn').classList.add('on');document.getElementById('seOff').classList.remove('on');
+  document.getElementById('seL').textContent='Included';
+  draw();
+});
+document.getElementById('seOff').addEventListener('click',function(){
+  if(!showStateEITC) return;
+  showStateEITC=false;
+  document.getElementById('seOff').classList.add('on');document.getElementById('seOn').classList.remove('on');
+  document.getElementById('seL').textContent='Off (MW only)';
+  draw();
+});
+document.getElementById('rfCash').addEventListener('click',function(){
+  if(nonrefAsCash) return;
+  nonrefAsCash=true;
+  document.getElementById('rfCash').classList.add('on');document.getElementById('rfZero').classList.remove('on');
+  document.getElementById('rfL').textContent='As cash';
+  draw();
+});
+document.getElementById('rfZero').addEventListener('click',function(){
+  if(!nonrefAsCash) return;
+  nonrefAsCash=false;
+  document.getElementById('rfZero').classList.add('on');document.getElementById('rfCash').classList.remove('on');
+  document.getElementById('rfL').textContent='Zero out';
+  draw();
+});
+[['catBoth','B'],['catMW','M'],['catEI','E'],['catNN','N']].forEach(function(p){
+  document.getElementById(p[0]).addEventListener('click',function(){
+    showCat[p[1]]=!showCat[p[1]];
+    document.getElementById(p[0]).classList.toggle('on');
+    draw();
+  });
+});
+
+document.getElementById('kdOn').addEventListener('click',function(){
+  if(showKinkDots) return;
+  showKinkDots=true;
+  document.getElementById('kdOn').classList.add('on');document.getElementById('kdOff').classList.remove('on');
+  document.getElementById('kdL').textContent='On';
+  draw();
+});
+document.getElementById('kdOff').addEventListener('click',function(){
+  if(!showKinkDots) return;
+  showKinkDots=false;
+  document.getElementById('kdOff').classList.add('on');document.getElementById('kdOn').classList.remove('on');
+  document.getElementById('kdL').textContent='Off';
+  draw();
+});
+document.getElementById('evOn').addEventListener('click',function(){
+  if(showEnvelope) return;
+  showEnvelope=true;
+  document.getElementById('evOn').classList.add('on');document.getElementById('evOff').classList.remove('on');
+  document.getElementById('evL').textContent='On';
+  draw();
+});
+document.getElementById('evOff').addEventListener('click',function(){
+  if(!showEnvelope) return;
+  showEnvelope=false;
+  document.getElementById('evOff').classList.add('on');document.getElementById('evOn').classList.remove('on');
+  document.getElementById('evL').textContent='Off';
+  draw();
+});
+
+// Init
+draw();
+</script>
+</body>
+</html>

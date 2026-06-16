@@ -1,0 +1,21 @@
+---
+title: "Resources"
+pagetitle: "Resources — Bingjin Xue"
+---
+
+## Data Visualizations
+
+::: {.resource}
+### EITC × Minimum Wage Budget Lines
+<div class="resource-meta">Interactive visualization · EITC × MW project</div>
+
+<details class="resource-body">
+<summary>Description</summary>
+
+The visualization plots annual budget constraints for a married couple with two children. It compares the federal EITC schedule with state minimum wages and state EITC top-ups, making the policy interaction visible as shifts in kink locations and plateau heights.
+</details>
+
+<div class="actions">
+[Open visualization](resources/eitc-mw-budget-lines.html){target="_blank" aria-label="Open EITC minimum wage budget lines visualization"}
+</div>
+:::
