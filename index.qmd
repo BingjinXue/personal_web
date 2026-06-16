@@ -4,7 +4,7 @@ page-layout: full
 pagetitle: "Bingjin (Ben) Xue — Economist"
 include-in-header:
   - text: |
-      <meta name="description" content="Bingjin Xue (Ben Xue) — Assistant Professor of Economics at the University of New Hampshire. Research in health economics, applied microeconometrics, and causal inference.">
+      <meta name="description" content="Bingjin Xue (Ben Xue) — Assistant Professor of Economics at the University of New Hampshire. Studies how policy shapes the health, work, and wellbeing of vulnerable populations, using causal inference and machine learning on large administrative data.">
       <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -38,8 +38,7 @@ include-in-header:
 <div class="bio">
 
 <p>
-I am an Assistant Professor of Economics at the University of New Hampshire. My research focuses on causal inference in the field of health economics using econometric methods, machine learning, and large-scale data.
-My current research interests fall into three categories: 1) how does health information technology affect healthcare providers and consumers. 2) the impact of public policies on the population mental health and wellbeing. 3) the economics of inequality and vulnerable population. 
+I am an Assistant Professor of Economics at the University of New Hampshire. I study how policy shapes the health, work, and wellbeing of vulnerable populations — combining causal inference and machine learning with large administrative data. My recent work asks how naloxone access laws change maternal and infant health, how abortion restrictions ripple into economic hardship and crime, and how the technology hospitals adopt reshapes the specialists patients are sent to. The thread connecting them: the people most affected by a policy are often the least visible in the data.
 </p>
 
 <div class="links">
