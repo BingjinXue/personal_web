@@ -26,6 +26,12 @@ html {
   scrollbar-gutter: stable;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* ---------- Base ---------- */
 body {
   font-family: var(--font-serif);
@@ -53,6 +59,7 @@ em { font-style: italic; color: var(--ink-soft); }
 
 /* ---------- Readable column ---------- */
 main.content {
+  width: min(780px, calc(100vw - 2.5rem));
   max-width: 780px;
   margin: 0 auto;
   padding: 2.5rem 1.25rem 4rem;
@@ -179,6 +186,8 @@ a:hover {
 /* ---------- Collapsible abstract / course body ---------- */
 .paper-abstract,
 .course-body {
+  display: block;
+  width: 100%;
   margin: 0.5rem 0 0.35rem;
 }
 .paper-abstract > summary,
@@ -216,10 +225,12 @@ a:hover {
 }
 .paper-abstract[open] > p,
 .course-body[open] > p {
+  width: 100%;
   font-size: 0.98rem;
   color: var(--ink-soft);
   margin-top: 0.5rem;
   margin-bottom: 0.25rem;
+  overflow-wrap: break-word;
 }
 .paper .actions {
   font-family: var(--font-sans);
@@ -274,6 +285,8 @@ a:hover {
   margin-bottom: 0.35rem;
 }
 .resource-body {
+  display: block;
+  width: 100%;
   margin: 0.5rem 0 0.35rem;
 }
 .resource-body > summary {
@@ -304,10 +317,12 @@ a:hover {
   color: var(--accent-hover);
 }
 .resource-body[open] > p {
+  width: 100%;
   font-size: 0.98rem;
   color: var(--ink-soft);
   margin-top: 0.5rem;
   margin-bottom: 0.25rem;
+  overflow-wrap: break-word;
 }
 .resource .actions {
   font-family: var(--font-sans);
