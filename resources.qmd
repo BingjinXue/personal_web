@@ -6,16 +6,24 @@ pagetitle: "Resources — Bingjin Xue"
 ## Data Visualizations
 
 ::: {.resource}
-### EITC × Minimum Wage Budget Lines
-<div class="resource-meta">Interactive visualization · EITC × MW project</div>
+### How State Minimum Wage & EITC Shape a Family's Income
+<div class="resource-meta">Interactive visualization · 51-state budget constraints</div>
+
+<a class="resource-figure" href="resources/eitc-mw-budget-lines.html" target="_blank" aria-label="Open the interactive EITC and minimum wage visualization">
+<img src="assets/eitc-mw-preview.png" alt="Annual income for a minimum-wage family of four across all 50 states and DC, showing how state minimum wage and EITC policy fan family incomes apart.">
+<span class="resource-figure-caption">How far the lines spread shows how much a family's income depends on which state they live in. Click to open the interactive tool.</span>
+</a>
 
 <details class="resource-body">
 <summary>Description</summary>
 
-The visualization plots annual budget constraints for a married couple with two children. It compares the federal EITC schedule with state minimum wages and state EITC top-ups, making the policy interaction visible as shifts in kink locations and plateau heights.
+How much does a low-wage family's income depend on where they live? This tool answers that visually. Each of 51 thin lines traces one state's annual budget constraint for a married couple with two children working at the minimum wage — earnings plus the federal EITC plus any state EITC top-up — as yearly hours rise. The heavy black line is the federal baseline ($7.25/hr, no state credit). The wider the lines fan apart, the more state policy alone determines a family's resources.
+
+Shaded "variation envelope" bands mark the spread of policy kinks across states — where the EITC plateau begins, and where its phase-out starts and ends. Controls let you switch the tax year, toggle the state EITC top-up on or off, choose how non-refundable credits are treated, filter states by policy type (higher minimum wage, state EITC, both, or neither), and show or hide kink markers. Hover any state to label its kinks. Pre-tax, nominal dollars.
+
 </details>
 
 <div class="actions">
-[Open visualization](resources/eitc-mw-budget-lines.html){target="_blank" aria-label="Open EITC minimum wage budget lines visualization"}
+[Open visualization](resources/eitc-mw-budget-lines.html){target="_blank" aria-label="Open the interactive EITC and minimum wage visualization"}
 </div>
 :::

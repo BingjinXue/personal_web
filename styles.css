@@ -329,6 +329,34 @@ a:hover {
   font-size: 0.85rem;
   margin-top: 0.35rem;
 }
+.resource-figure {
+  display: block;
+  margin: 0.75rem 0 0.5rem;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  overflow: hidden;
+  line-height: 0;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.resource-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.resource-figure:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+  transform: translateY(-1px);
+}
+.resource-figure .resource-figure-caption {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+  line-height: 1.4;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-soft);
+  border-top: 1px solid var(--rule);
+}
 
 /* ---------- Footer ---------- */
 .nav-footer {
