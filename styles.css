@@ -21,6 +21,11 @@
   --accent-hover: #083b68;
 }
 
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
 /* ---------- Base ---------- */
 body {
   font-family: var(--font-serif);
