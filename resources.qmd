@@ -3,8 +3,6 @@ title: "Resources"
 pagetitle: "Resources — Bingjin Xue"
 ---
 
-## Data Visualizations
-
 ::: {.resource}
 ### How State Minimum Wage & EITC Shape a Family's Income
 <div class="resource-meta">Interactive visualization · 51-state budget constraints</div>
