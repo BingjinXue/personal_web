@@ -73,7 +73,16 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
 .sp-title .swatch{width:11px;height:11px;border-radius:2px;display:inline-block}
 .sp-title .ct{color:var(--mt);font-weight:400;margin-left:auto;font-size:calc(8px*var(--fs))}
 .state-grid{display:flex;flex-wrap:wrap;gap:3px}
+.sp-hint{font-family:'JetBrains Mono',monospace;font-size:calc(7.5px*var(--fs));color:var(--mt);margin-bottom:6px;padding-bottom:5px;border-bottom:1px solid var(--bd)}
+.sp-hint .show-all{color:var(--cBoth);cursor:pointer;border-bottom:1px dotted var(--cBoth);margin-left:6px}
+.sp-hint .show-all:hover{opacity:.7}
 .st{padding:calc(2.5px*var(--fs)) calc(6px*var(--fs));border-radius:3px;font-size:calc(7.5px*var(--fs));line-height:1.2;border:1px solid transparent;cursor:default;transition:all .15s}
+.st:hover{filter:brightness(1.25);box-shadow:0 0 0 1px currentColor}
+.st.st-off{opacity:.32;text-decoration:line-through;filter:grayscale(.7)}
+.st.st-off:hover{filter:grayscale(.4) brightness(1.1);box-shadow:none}
+.st.st-catoff{opacity:.3;filter:grayscale(.85);background:rgba(128,128,128,.08);color:var(--mt);border-color:transparent}
+.st.st-catoff:hover{opacity:.55;filter:grayscale(.4);box-shadow:none}
+.st.st-forced{box-shadow:0 0 0 1px currentColor, 0 0 6px -1px currentColor}
 .st.mw{background:rgba(224,201,127,.10);color:var(--cMW);border-color:rgba(224,201,127,.22)}
 .st.ei{background:rgba(125,232,201,.10);color:var(--cEI);border-color:rgba(125,232,201,.22)}
 .st.bt{background:rgba(201,112,232,.12);color:var(--cBoth);border-color:rgba(201,112,232,.24)}
@@ -452,6 +461,8 @@ let curYear=2015;
 let showStateEITC=true;
 let nonrefAsCash=true;
 let showCat={B:true,M:true,E:true,N:false};
+let hiddenStates=new Set(); // states manually hidden while their category is ON
+let forcedOn=new Set();     // states forced visible while their category is OFF (override)
 let showKinkDots=true;
 let showEnvelope=true;
 let hoverAbb=null;     // abbreviation of highlighted state (persists across re-renders)
@@ -460,6 +471,12 @@ let currentStates=[]; // {abb, mw, eitc, ref, cat, color, pts:[{h,y}], kinkPts:[
 let fedPts=[];        // federal reference points
 let fedKinkPts=[];    // {h,y} ×3 for federal kinks
 function hoverIdx(){ if(!hoverAbb) return -1; for(var i=0;i<currentStates.length;i++) if(currentStates[i].abb===hoverAbb) return i; return -1; }
+function stateVisible(s){
+  // Category ON: visible unless manually hidden.
+  // Category OFF: hidden unless individually forced on (override).
+  if(showCat[s.cat]) return !hiddenStates.has(s.abb);
+  return forcedOn.has(s.abb);
+}
 
 // ============================================================
 // EITC math
@@ -643,7 +660,7 @@ function envelopeByCat(){
   });
   for(var i=0;i<currentStates.length;i++){
     var s=currentStates[i];
-    if(!showCat[s.cat]) continue;
+    if(!stateVisible(s)) continue;
     for(var k=0;k<3;k++){
       var p=s.kinkPts[k];
       var e=env[s.cat][k];
@@ -789,7 +806,7 @@ function drawKinkDots(){
   // State kinks
   for(var i=0;i<currentStates.length;i++){
     var s=currentStates[i];
-    if(!showCat[s.cat]) continue;
+    if(!stateVisible(s)) continue;
     if(i===hi) continue; // highlighted state gets its own bigger dots later
     var alpha = (s.cat==='N')?0.35:0.78;
     for(var k=0;k<3;k++){
@@ -850,7 +867,7 @@ function drawHoverCoords(){
 }
 
 
-function draw(){
+function draw(chartOnly){
   rebuild();
   var w=C.getBoundingClientRect().width,h=C.getBoundingClientRect().height;
   ctx.clearRect(0,0,w,h);
@@ -858,7 +875,7 @@ function draw(){
   document.getElementById('titleYear').textContent=curYear;
   document.getElementById('subFedMW').textContent='$'+(DATA.fedM[curYear]).toFixed(2);
   updateParamTable();
-  updateStatePanel();
+  if(!chartOnly) updateStatePanel();
   updateYrCtx();
 
   // 0) Envelope rectangles (lowest layer behind lines)
@@ -868,7 +885,7 @@ function draw(){
   var hi=hoverIdx();
   for(var i=0;i<currentStates.length;i++){
     var s=currentStates[i];
-    if(!showCat[s.cat]) continue;
+    if(!stateVisible(s)) continue;
     if(i===hi) continue;
     var alpha = (s.cat==='N')?0.18:0.62;
     drawPath(s.pts, s.color, strokeForState(s), alpha, [10,3]);
@@ -931,7 +948,7 @@ C.addEventListener('mousemove',function(ev){
   var fedDist = Math.abs(py-fedPx);
   for(var i=0;i<currentStates.length;i++){
     var s=currentStates[i];
-    if(!showCat[s.cat]) continue;
+    if(!stateVisible(s)) continue;
     var y=lineY(s.pts,h); if(y==null) continue;
     var dpx = Math.abs(py - yS(y));
     if(dpx<bestDist){ bestDist=dpx; best=i; }
@@ -1080,6 +1097,9 @@ function updateStatePanel(){
     if(anyShown) html += envHtml;
   }
   // ----- Per-category state lists -----
+  var nHidden = hiddenStates.size;
+  html += '<div class="sp-hint">Click a state to show/hide its line · hover to highlight'+
+    (nHidden>0 ? ' <span class="show-all" id="showAllBtn">Show all ('+nHidden+' hidden)</span>' : '')+'</div>';
   ['B','M','E','N'].forEach(function(k){
     if(!groups[k].length) return;
     html += '<div class="sp-row">';
@@ -1091,21 +1111,67 @@ function updateStatePanel(){
       else if(k==='M') det=' $'+s.mw.toFixed(2);
       else if(k==='E') det=' '+(s.eitc*100).toFixed(0)+'%'+(s.ref?'':'*');
       var idx=currentStates.indexOf(s);
-      html += '<span class="st '+lbl[k].cls+'" data-idx="'+idx+'" style="cursor:pointer">'+s.abb+det+'</span>';
+      var catOn=showCat[k];
+      var vis=stateVisible(s);
+      var cls=lbl[k].cls;
+      if(!catOn && !vis) cls+=' st-catoff';   // grayed by its category being off
+      else if(catOn && !vis) cls+=' st-off';   // manually hidden while category on
+      else if(!catOn && vis) cls+=' st-forced';// overridden visible despite category off
+      var ttl=catOn ? 'Click to hide this state' : 'Category off — click to show just this state';
+      html += '<span class="st '+cls+'" data-idx="'+idx+'" style="cursor:pointer" title="'+ttl+'">'+s.abb+det+'</span>';
     });
     html += '</div></div>';
   });
   document.getElementById('stPanel').innerHTML=html;
-  // Click-to-highlight from side panel
+  // Hint + reset link
+  function refreshHint(){
+    var hint=document.querySelector('#stPanel .sp-hint');
+    if(!hint) return;
+    var nOff=hiddenStates.size, nForced=forcedOn.size;
+    var bits='Click a state to show/hide its line · hover to highlight';
+    if(nOff+nForced>0){
+      bits+=' <span class="show-all" id="showAllBtn">Reset ('+(nOff+nForced)+')</span>';
+    }
+    hint.innerHTML=bits;
+    var sa=document.getElementById('showAllBtn');
+    if(sa){ sa.addEventListener('click',function(){ hiddenStates.clear(); forcedOn.clear(); draw(); }); }
+  }
   document.querySelectorAll('#stPanel .st').forEach(function(el){
     el.addEventListener('click',function(){
       var i=parseInt(el.getAttribute('data-idx'));
       if(isNaN(i)||i<0||i>=currentStates.length) return;
-      var abb=currentStates[i].abb;
-      if(hoverAbb===abb){ hoverAbb=null; } else { hoverAbb=abb; hoverFedHover=false; }
-      draw();
+      var s=currentStates[i], abb=s.abb;
+      if(showCat[s.cat]){
+        // Category on: toggle manual hide
+        if(hiddenStates.has(abb)) hiddenStates.delete(abb);
+        else { hiddenStates.add(abb); if(hoverAbb===abb) hoverAbb=null; }
+        el.classList.toggle('st-off', hiddenStates.has(abb));
+      } else {
+        // Category off: toggle override (force this one visible)
+        if(forcedOn.has(abb)){ forcedOn.delete(abb); }
+        else { forcedOn.add(abb); }
+        var on=forcedOn.has(abb);
+        el.classList.toggle('st-forced', on);
+        el.classList.toggle('st-catoff', !on);
+        if(!on && hoverAbb===abb) hoverAbb=null;
+      }
+      refreshHint();
+      draw(true); // chart-only: keep panel DOM intact
+    });
+    // Hover a pill to highlight that state's line on the chart (only if it's visible)
+    el.addEventListener('mouseenter',function(){
+      var i=parseInt(el.getAttribute('data-idx'));
+      if(isNaN(i)||i<0||i>=currentStates.length) return;
+      var s=currentStates[i];
+      if(!stateVisible(s)) return;
+      hoverAbb=s.abb; hoverFedHover=false; draw(true);
+    });
+    el.addEventListener('mouseleave',function(){
+      if(hoverAbb){ hoverAbb=null; draw(true); }
     });
   });
+  var showAll=document.getElementById('showAllBtn');
+  if(showAll){ showAll.addEventListener('click',function(){ hiddenStates.clear(); forcedOn.clear(); draw(); }); }
 }
 
 const YR_NOTES={
@@ -1175,8 +1241,13 @@ document.getElementById('rfZero').addEventListener('click',function(){
 });
 [['catBoth','B'],['catMW','M'],['catEI','E'],['catNN','N']].forEach(function(p){
   document.getElementById(p[0]).addEventListener('click',function(){
-    showCat[p[1]]=!showCat[p[1]];
+    var cat=p[1];
+    showCat[cat]=!showCat[cat];
     document.getElementById(p[0]).classList.toggle('on');
+    // Reset per-state overrides for this category so its states follow the category again
+    currentStates.forEach(function(s){
+      if(s.cat===cat){ hiddenStates.delete(s.abb); forcedOn.delete(s.abb); }
+    });
     draw();
   });
 });
