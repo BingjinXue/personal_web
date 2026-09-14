@@ -66,6 +66,21 @@ Do anti-LGBT policies harm population mental health? Using Polish "LGBT-free zon
 ## Under Review
 
 ::: {.paper}
+[Anti-Immigrant State Legislation and Mental Health Care Use Among Commercially Insured Workers: Evidence from Florida's SB 1718]{.title}
+
+[with Dajung Jun and Xueting Sun]{.authors}
+
+[[Under review]{.tag}]{.venue}
+
+<details class="paper-abstract">
+<summary>Abstract</summary>
+
+Do anti-immigrant laws affect mental health care among insured workers? We study Florida's SB 1718, a 2023 law that expanded E-Verify requirements and required hospitals to collect immigration-status information. Using MarketScan commercial claims for 210,985 Florida workers and a difference-in-differences design across high- and low-noncitizen-share MSAs, we find mental health visits rose by 0.3 percentage points and mental health visit days rose by 7.2%. Effects grow over the first post-law year and concentrate among women and full-time employees. Other health care use does not change. The costs of immigration enforcement reach employed, commercially insured populations.
+
+</details>
+:::
+
+::: {.paper}
 [Abortion, Economic Hardship, and Crime]{.title}
 
 [with Erkmen G. Aslim, Wei Fu, Caitlin Myers, and Erdal Tekin]{.authors}
