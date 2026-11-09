@@ -185,7 +185,7 @@ We study empirical design composition — layering one identification strategy o
 
 [with Shin-Yi Chou and Jiarun Li]{.authors}
 
-[[Under review]{.tag}]{.venue}
+[[Under review]{.tag} NBER Working Paper 35997]{.venue}
 
 <details class="paper-abstract">
 <summary>Abstract</summary>
@@ -193,6 +193,10 @@ We study empirical design composition — layering one identification strategy o
 Can coprescription mandates expand naloxone access without fueling opioid misuse? Eighteen U.S. states now require physicians to prescribe or offer naloxone alongside high-risk opioids. Using Medicare Part D data (2013–2023) and a staggered difference-in-differences design, we find coprescription laws raise naloxone prescribing by 275%, with effects persisting at least five years. Laws that mandate coprescription produce twice the effect of laws that mandate only discussion. We find no evidence of increased opioid or benzodiazepine prescribing. Prescribing of opioid use disorder medications and treatment engagement both rise. Prescriber-focused harm reduction can expand treatment without fueling misuse.
 
 </details>
+
+<div class="actions">
+[NBER working paper](https://www.nber.org/papers/w35997){target="_blank" rel="noopener"}
+</div>
 :::
 
 ## Working Papers
